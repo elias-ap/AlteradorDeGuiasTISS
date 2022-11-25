@@ -44,6 +44,8 @@ for i in tags_texts:
     unique_line_string += i
 
 h = hashlib.md5(unique_line_string.encode('iso-8859-1'))
-print(h.hexdigest())
+new_hash_code = h.hexdigest()
+
+
 
 
