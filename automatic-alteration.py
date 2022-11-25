@@ -284,4 +284,8 @@ if doValueAlteration():
                             alterValue()
 
     do_value_alteration = 'NO'
-    TISS_guide.write(p + '/GUIA_TESTE.XML')
+    TISS_guide.write(p + '/GUIA_TESTE.XML', encoding='ISO-8859-1')
+
+TISS_guide.write(p + '/GUIA_TESTE.XML', encoding='ISO-8859-1', default_namespace="ans")
+
+# TODO --> SAY TO DEV XML ETREE LIB TO SEE BUG OF NAMESPACE
