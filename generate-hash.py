@@ -26,9 +26,9 @@ def getAllTags(root_tag):
     return all_tags
 
 
-path = 'C:/Users/eliasp/Downloads/00000000000000007220_cfd373cf4850f6b6652ea33dda4e6f2f.xml'
+file_path = '' # FILE PATH
 
-guide = openTissGuide(path)
+guide = openTissGuide(file_path)
 root_tag = getRootTag(guide)
 root_tag = removeHashTextFromGuide(root_tag)
 all_tags = getAllTags(root_tag)
@@ -45,6 +45,7 @@ for i in tags_texts:
 
 h = hashlib.md5(unique_line_string.encode('iso-8859-1'))
 new_hash_code = h.hexdigest()
+
 
 
 
