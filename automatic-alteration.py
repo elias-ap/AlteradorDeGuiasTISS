@@ -1,8 +1,9 @@
 #   IMPORTS
+import hashlib
 import xml.etree.ElementTree as ET
 import pandas as PD
 
-"""                                 FUNCTIONS THAT WILL BE USED BY SOFTWARE                                          """
+""" FUNCTIONS THAT WILL BE USED BY SOFTWARE """
 
 
 def doDataAlteration():
@@ -12,6 +13,8 @@ def doDataAlteration():
     elif do_data_alteration.lower() == 'no' or do_data_alteration.lower() == 'n':
         return False
 
+
+########################################################################################################################
 
 def doValueAlteration():
     if do_value_alteration.lower() == 'yes' or do_value_alteration.lower() == 'y':
@@ -23,7 +26,6 @@ def doValueAlteration():
 
 ########################################################################################################################
 
-#   FUNCTION TO RETURN THE CRITIC REVIEW LINE
 def returnReviewLine(list):
     # IF DEFINED FOR DOING DATA ALTERATIONS:
     if doDataAlteration():
@@ -36,7 +38,6 @@ def returnReviewLine(list):
 
 ########################################################################################################################
 
-#   FUNCTION TO CHECK IF A OBJECT EXISTS:
 def isExists(obj):
     if obj is not None:
         return True
@@ -46,7 +47,6 @@ def isExists(obj):
 
 ########################################################################################################################
 
-#   FUNCTION FOR SEARCH ACCOUNTS IN GUIDE
 def searchAccountProcedures(account):
     account = account.find(f'ans:cabecalhoGuia[ans:numeroGuiaPrestador="{account_number}"]..', ANS_prefix)
 
@@ -59,7 +59,6 @@ def searchAccountProcedures(account):
 
 ########################################################################################################################
 
-#   FUNCTION FOR SEARCHING DATA OF THE SPECIFIED PROCEDURE IN ACCOUNT:
 def searchProcedureDataInProcedure(account):
     if isExists(account):
         for procedures in account:
@@ -76,7 +75,6 @@ def searchProcedureDataInProcedure(account):
 
 ########################################################################################################################
 
-#   FUNCTION FOR ALTER TABLE TYPE:
 def alterTableType():
     altered_data = 'table type'
     tag_table_type = procedure_data.find('ans:codigoTabela', ANS_prefix)
@@ -92,7 +90,6 @@ def alterTableType():
 
 ########################################################################################################################
 
-#   FUNCTION FOR ALTER PROCEDURE CODE:
 def alterProcedureCode():
     altered_data = 'procedure code'
 
@@ -104,7 +101,6 @@ def alterProcedureCode():
 
 ########################################################################################################################
 
-#   FUNCTION FOR ALTER UNITY MEASURE
 def alterUnityMeasure():
     altered_data = 'unity measure'
     tag_unity_measure = procedure_data.find('ans:unidadeMedida', ANS_prefix)
@@ -117,7 +113,6 @@ def alterUnityMeasure():
 
 ########################################################################################################################
 
-#   FUNCTION FOR ALTER VALUE
 def alterValue():
     altered_data = 'unitary value'
 
@@ -140,7 +135,6 @@ def alterValue():
 
 ########################################################################################################################
 
-#   FUNCTION FOR RECALCULATION TOTAL VALUES
 def recalculateAllTotalValues(valueDifference):
     account_total_values_tag = account.find('ans:valorTotal', ANS_prefix)
     general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ANS_prefix)
@@ -155,7 +149,6 @@ def recalculateAllTotalValues(valueDifference):
 
 ########################################################################################################################
 
-#   FUNCTION FOR GENERATE ALTERATION LOG:
 def generateAlterationLog(altered_data, old_value, new_value):
     old = old_value
     new = new_value
@@ -166,31 +159,67 @@ def generateAlterationLog(altered_data, old_value, new_value):
 
 
 ########################################################################################################################
-"""
-                                SECTION FOR OPENING AND READING OF ARCHIVE                                         
 
-    Objective: Open archive/guide in format xml for read and realization of alterations
+def removeHashTextFromGuide(root_tag):
+    root_tag.find('ans:epilogo', ANS_prefix).find('ans:hash', ANS_prefix).text = ''
+    return root_tag
 
-    Developer: Elias Araujo                                                                                            
-    Date creation: 22/11/2022                                                        
-"""
-
-# guidePath = input('Digite o caminho da guia: ').replace('"', '') # SET GUIDE PATH
-# TISSguide = ET.parse(str(guidePath)) # OPEN FILE
-
-ANS_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}  # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
-source_folder_path = 'C:/Users/eliasp/OneDrive - Fundação Faculdade de Medicina/altera_xml/REFATORAR_ALTERA_XML/sources'
-TISS_guide = ET.parse(source_folder_path + '/GUIA_TESTE.xml')  # OPEN AND STORAGE TISS GUIDE IN VARIABLE
-root_tag = TISS_guide.getroot()
 
 ########################################################################################################################
+
+def generateNewHashCode(all_tags):
+    tags_texts = []
+    unique_line_string = ''
+    for tag in all_tags:
+        tags_texts.append(tag.text.replace("\n", ''))
+
+    for i in tags_texts:
+        unique_line_string += i
+
+    h = hashlib.md5(unique_line_string.encode('iso-8859-1'))
+    new_hash_code = h.hexdigest()
+    return new_hash_code
+
+
+########################################################################################################################
+def saveGuide(TISS_guide):
+    answer = input('Save archive? Write Y (Yes) or N (No)')
+    if answer.lower() == 'yes' or answer.lower() == 'y':
+        root_tag = removeHashTextFromGuide(TISS_guide.getroot())
+        all_tags = root_tag.iter()
+        new_hash_code = generateNewHashCode(all_tags)
+        root_tag.find('ans:epilogo', ANS_prefix).find('ans:hash', ANS_prefix).text = new_hash_code
+        TISS_guide.write(guidePath, encoding='ISO-8859-1')
+
+    elif answer.lower() == 'no' or answer.lower() == 'n':
+        return print("Archive don't saved")
+
+
+########################################################################################################################
+
 """
-                                SECTION FOR READING CRITCS IN EXCEL PLAN                                       
+SECTION FOR OPENING AND READING OF ARCHIVE                                         
 
-    Objective:  Open a excel plan for read critics
+Objective: Open archive/guide in format xml for read and realization of alterations
 
-    Developer: Elias Araujo                                                                                            
-    Date creation: 22/11/2022        
+Developer: Elias Araujo                                                                                            
+Date creation: 22/11/2022                                                        
+"""
+
+guidePath = input("Write guide's path: ").replace('"', '')  # SET GUIDE PATH
+TISS_guide = ET.parse(guidePath, parser=ET.XMLParser(encoding='ISO-8859-1'))
+ANS_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}  # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
+source_folder_path = 'sources'
+
+########################################################################################################################
+
+"""
+SECTION FOR READING CRITCS IN EXCEL PLAN                                       
+
+Objective:  Open a excel plan for read critics
+
+Developer: Elias Araujo                                                                                            
+Date creation: 22/11/2022        
 """
 
 # TODO -> Why is looping two times if not have a for here? Fix it! -- FIXED
@@ -202,6 +231,17 @@ do_data_alteration = input('You want to do data alterations? Write Y(yes) or N(n
 do_value_alteration = input('You want to do values alterations? Write Y(yes) or N(no):\n')
 
 reviews_list = []
+
+"""
+SECTION FOR ACCOUNTS DATA ALTERATIONS IN GUIDE                                    
+
+Objective:  Do data alterations in accounts accordingly with readed critic reviews
+
+Developer: Elias Araujo                                                                                            
+Date creation: 22/11/2022        
+"""
+root_tag = TISS_guide.getroot()
+
 if doDataAlteration():
     # READ PLAN OF DATA ALTERATION IN EXCEL
     table_reviews = PD.read_excel(p + "/PLANILHA_ALTERA_DESPESA.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
@@ -218,16 +258,6 @@ if doDataAlteration():
                  new_unity_measure] = returnReviewLine(reviews_list)
 
                 reviews_list.clear()
-########################################################################################################################
-                """
-                                                SECTION FOR ACCOUNTS DATA ALTERATIONS IN GUIDE                                    
-
-                    Objective:  Do data alterations in accounts accordingly with readed critic reviews
-
-                    Developer: Elias Araujo                                                                                            
-                    Date creation: 22/11/2022        
-                """
-
                 accounts = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaSP-SADT')
                 for account in accounts:
                     if account_number != '':
@@ -247,11 +277,20 @@ if doDataAlteration():
                             alterUnityMeasure()
                             alterProcedureCode()
     do_data_alteration = 'NO'
-    TISS_guide.write(p + '/GUIA_TESTE.XML')
+
+"""
+SECTION FOR ACCOUNTS VALUE ALTERATIONS IN GUIDE                                    
+
+Objective:  Do value alterations in accounts accordingly with readed critic reviews
+
+Developer: Elias Araujo                                                                                            
+Date creation: 22/11/2022        
+"""
 
 if doValueAlteration():
     # READ PLAN OF VALUES ALTERATIONS IN EXCEL
     table_reviews = PD.read_excel(p + "/PLANILHA_ALTERA_DESPESA.xlsx", sheet_name='2', dtype=str, keep_default_na=False)
+
     line_count = len(table_reviews.index)
     columns_count = len(table_reviews.columns)
 
@@ -262,14 +301,6 @@ if doValueAlteration():
             if len(reviews_list) == 4:  # WHEN LINE IS COMPLETE
                 [account_number, procedure_code, unitary_value, new_unitary_value] = returnReviewLine(reviews_list)
                 reviews_list.clear()
-                """
-                                                SECTION FOR ACCOUNTS DATA ALTERATIONS IN GUIDE                                    
-
-                    Objective:  Do data alterations in accounts accordingly with readed critic reviews
-
-                    Developer: Elias Araujo                                                                                            
-                    Date creation: 22/11/2022        
-                """
                 accounts = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaSP-SADT')
                 for account in accounts:
                     if account_number != '':
@@ -282,8 +313,7 @@ if doValueAlteration():
                         procedure_data = searchProcedureDataInProcedure(all_procedures_in_guide)
                         if procedure_data is not None:
                             alterValue()
-
     do_value_alteration = 'NO'
-    TISS_guide.write(p + '/GUIA_TESTE.XML', encoding='ISO-8859-1')
 
-# TODO --> SAY TO DEV XML ETREE LIB TO SEE BUG OF NAMESPACE
+saveGuide(TISS_guide)
+
