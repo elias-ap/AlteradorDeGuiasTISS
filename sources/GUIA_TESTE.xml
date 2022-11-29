@@ -22,24 +22,24 @@
       <ns0:guiasTISS>
         <ns0:guiaSP-SADT>
           <ns0:cabecalhoGuia>
-            <ns0:registroANS>323080</ns0:registroANS>
-            <ns0:numeroGuiaPrestador>22105449</ns0:numeroGuiaPrestador>
+            <ns0:registroANS>000000</ns0:registroANS>
+            <ns0:numeroGuiaPrestador>000000</ns0:numeroGuiaPrestador>
           </ns0:cabecalhoGuia>
           <ns0:dadosBeneficiario>
-            <ns0:numeroCarteira>0901002422350316</ns0:numeroCarteira>
+            <ns0:numeroCarteira>000000</ns0:numeroCarteira>
             <ns0:atendimentoRN>N</ns0:atendimentoRN>
-            <ns0:nomeBeneficiario>GLACIA MARIA PASSOS</ns0:nomeBeneficiario>
-            <ns0:numeroCNS>700100885711290</ns0:numeroCNS>
+            <ns0:nomeBeneficiario>00000</ns0:nomeBeneficiario>
+            <ns0:numeroCNS>000000</ns0:numeroCNS>
           </ns0:dadosBeneficiario>
           <ns0:dadosSolicitante>
             <ns0:contratadoSolicitante>
-              <ns0:codigoPrestadorNaOperadora>21034605</ns0:codigoPrestadorNaOperadora>
-              <ns0:nomeContratado>FUNDACAO FACULDADE DE MEDICINA</ns0:nomeContratado>
+              <ns0:codigoPrestadorNaOperadora>000000000000</ns0:codigoPrestadorNaOperadora>
+              <ns0:nomeContratado>000000000000</ns0:nomeContratado>
             </ns0:contratadoSolicitante>
             <ns0:profissionalSolicitante>
-              <ns0:nomeProfissional>BEATRIZ ALVARENGA GONZALES</ns0:nomeProfissional>
+              <ns0:nomeProfissional>0000000000</ns0:nomeProfissional>
               <ns0:conselhoProfissional>6</ns0:conselhoProfissional>
-              <ns0:numeroConselhoProfissional>182603</ns0:numeroConselhoProfissional>
+              <ns0:numeroConselhoProfissional>0000000000</ns0:numeroConselhoProfissional>
               <ns0:UF>35</ns0:UF>
               <ns0:CBOS>225121</ns0:CBOS>
             </ns0:profissionalSolicitante>
@@ -52,7 +52,7 @@
           <ns0:dadosExecutante>
             <ns0:contratadoExecutante>
               <ns0:codigoPrestadorNaOperadora>21034605</ns0:codigoPrestadorNaOperadora>
-              <ns0:nomeContratado>FUNDACAO FACULDADE DE MEDICINA</ns0:nomeContratado>
+              <ns0:nomeContratado>00000000000</ns0:nomeContratado>
             </ns0:contratadoExecutante>
             <ns0:CNES>2078015</ns0:CNES>
           </ns0:dadosExecutante>
@@ -246,16 +246,16 @@
           <ns0:dadosBeneficiario>
             <ns0:numeroCarteira>0101004912010020</ns0:numeroCarteira>
             <ns0:atendimentoRN>N</ns0:atendimentoRN>
-            <ns0:nomeBeneficiario>HUMBERTO SERAFIM CORREIA JUNIOR</ns0:nomeBeneficiario>
+            <ns0:nomeBeneficiario>00000000000000000</ns0:nomeBeneficiario>
             <ns0:numeroCNS>898001308096528</ns0:numeroCNS>
           </ns0:dadosBeneficiario>
           <ns0:dadosSolicitante>
             <ns0:contratadoSolicitante>
               <ns0:codigoPrestadorNaOperadora>21034605</ns0:codigoPrestadorNaOperadora>
-              <ns0:nomeContratado>FUNDACAO FACULDADE DE MEDICINA</ns0:nomeContratado>
+              <ns0:nomeContratado>FUNDACAO 0</ns0:nomeContratado>
             </ns0:contratadoSolicitante>
             <ns0:profissionalSolicitante>
-              <ns0:nomeProfissional>TERESA YAE TAKAGAKI</ns0:nomeProfissional>
+              <ns0:nomeProfissional>TERESA0</ns0:nomeProfissional>
               <ns0:conselhoProfissional>6</ns0:conselhoProfissional>
               <ns0:numeroConselhoProfissional>34214</ns0:numeroConselhoProfissional>
               <ns0:UF>35</ns0:UF>
@@ -270,7 +270,7 @@
           <ns0:dadosExecutante>
             <ns0:contratadoExecutante>
               <ns0:codigoPrestadorNaOperadora>21034605</ns0:codigoPrestadorNaOperadora>
-              <ns0:nomeContratado>FUNDACAO FACULDADE DE MEDICINA</ns0:nomeContratado>
+              <ns0:nomeContratado>00000000000</ns0:nomeContratado>
             </ns0:contratadoExecutante>
             <ns0:CNES>2078015</ns0:CNES>
           </ns0:dadosExecutante>
