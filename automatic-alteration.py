@@ -205,7 +205,6 @@ source_folder_path = 'sources'
 
 do_data_alteration = input('You want to do data alterations? Write Y(yes) or N(no):\n')
 do_value_alteration = input('You want to do values alterations? Write Y(yes) or N(no):\n')
-
 root_tag = tiss_guide.getroot()
 p = source_folder_path
 reviews_list = []
