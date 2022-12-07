@@ -6,12 +6,43 @@ import pandas as PD
 """ FUNCTIONS THAT WILL BE USED BY SOFTWARE """
 
 
-def doDataAlteration():
-    if do_data_alteration.lower() == 'yes' or do_data_alteration.lower() == 'y':
-        return True
+def doDataAlteration(do_data_alteration):
+    if do_data_alteration == '1':
+        # READ PLAN OF DATA ALTERATION IN EXCEL
+        table_reviews = PD.read_excel(p + "/PLANILHA_ALTERA_DESPESA.xlsx", sheet_name='1', dtype=str,
+                                      keep_default_na=False)
+        print(table_reviews)
+        line_count = len(table_reviews.index)
+        columns_count = len(table_reviews.columns)
+        for i in range(0, line_count):
+            for j in range(0, columns_count):
+                # INSERT LINE OF CRITICAL IN A LIST
+                reviews_list.append(table_reviews.iloc[i][j])
+                if len(reviews_list) == 7:  # WHEN LINE IS COMPLETE
+                    [account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
+                     new_unity_measure] = returnReviewLine(reviews_list)
 
-    elif do_data_alteration.lower() == 'no' or do_data_alteration.lower() == 'n':
-        return False
+                    reviews_list.clear()
+                    accounts = root_tag.iter(
+                        '{http://www.ans.gov.br/padroes/tiss/schemas}guiaSP-SADT')  # guiaSP-SADT, guiaResumoInternacao
+                    for account in accounts:
+                        if account_number != '':
+                            account_procedures = searchAccountProcedures(account)
+                            procedure_data = searchProcedureDataInProcedure(account_procedures)
+
+                            if procedure_data is not None:
+                                alterTableType()
+                                alterUnityMeasure()
+                                alterProcedureCode()
+
+                        else:
+                            all_procedures_in_guide = account.iterfind('ans:outrasDespesas/', ans_prefix)
+                            procedure_data = searchProcedureDataInProcedure(all_procedures_in_guide)
+                            if procedure_data is not None:
+                                alterTableType()
+                                alterUnityMeasure()
+                                alterProcedureCode()
+    do_data_alteration = 0
 
 
 ########################################################################################################################
@@ -28,11 +59,11 @@ def doValueAlteration():
 
 def returnReviewLine(list):
     # IF DEFINED FOR DOING DATA ALTERATIONS:
-    if doDataAlteration():
+    if do_data_alteration == '1':
         return list[0], list[1], list[2], list[3], list[4], list[5], list[6]
 
     # IF DEFINED FOR DOING VALUE ALTERATIONS:
-    elif doValueAlteration():
+    elif do_value_alteration == '1':
         return list[0], list[1], list[2].replace(',', '.'), list[3].replace(',', '.')
 
 
@@ -183,69 +214,135 @@ def generateNewHashCode(all_tags):
 
 ########################################################################################################################
 
-def saveGuide():
-    answer = input('Save archive? Write Y (Yes) or N (No)')
-    if answer.lower() == 'yes' or answer.lower() == 'y':
-        root_tag = removeHashTextFromGuide(tiss_guide.getroot())
-        all_tags = root_tag.iter()
-        new_hash_code = generateNewHashCode(all_tags)
-        root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
-        tiss_guide.write(guide_path.split('_')[0].__add__(f'_{new_hash_code}.xml'), encoding="ISO-8859-1")
-
-    elif answer.lower() == 'no' or answer.lower() == 'n':
-        return print("Archive don't saved")
+# def saveGuide():
+#     answer = input('Save archive? Write Y (Yes) or N (No)')
+#     if answer.lower() == 'yes' or answer.lower() == 'y':
+#         root_tag = removeHashTextFromGuide(tiss_guide.getroot())
+#         all_tags = root_tag.iter()
+#         new_hash_code = generateNewHashCode(all_tags)
+#         root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
+#         tiss_guide.write(guide.split('_')[0].__add__(f'_{new_hash_code}.xml'), encoding="ISO-8859-1")
+#
+#     elif answer.lower() == 'no' or answer.lower() == 'n':
+#         return print("Archive don't saved")
 
 
 ########################################################################################################################
+import tkinter as ttk
+from tkinter import filedialog as fd
+from tkinter import messagebox as mb
 
-guide_path = input("Write guide's path: ").replace('"', '')  # SET GUIDE PATH
-tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
+
+def disableButtons(button_list):
+    for button in button_list:
+        button['state'] = 'disabled'
+
+
+def enableButtons(button_list):
+    for button in button_list:
+        button['state'] = 'active'
+
+
+def waitingOperation():
+    chooseGuide_button['state'] = 'disabled'
+    button_list = [doAlteration_button, generateHashAndSave_button, cancel_button,
+                   valueAlterationCheck_button, dataAlterationCheck_button]
+    enableButtons(button_list)
+
+
+def cancel():
+    chooseGuide_button['state'] = 'active'
+    button_list = [generateHashAndSave_button, doAlteration_button, cancel_button, dataAlterationCheck_button, valueAlterationCheck_button]
+    dataAlterationCheck_button.deselect(), valueAlterationCheck_button.deselect()
+    disableButtons(button_list)
+    guide = ''
+
+
+def chooseGuide():
+    global tiss_guide
+    global root_tag
+    global guide
+    file_type = (('XML files', '*.xml'), ('All files', '*.*'))
+    guide = fd.askopenfilename(filetypes=file_type)
+    if guide != '':
+        waitingOperation()
+        tiss_guide = ET.parse(guide, parser=ET.XMLParser(encoding="ISO-8859-1"))
+        root_tag = tiss_guide.getroot()
+    else:
+        mb.showwarning(title='Erro', message='A guia não foi escolhida!')
+
+
+def saveGuide():
+    root_tag = removeHashTextFromGuide(tiss_guide.getroot())
+    all_tags = root_tag.iter()
+    new_hash_code = generateNewHashCode(all_tags)
+    root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
+    tiss_guide.write(guide.split('_')[0].__add__(f'_{new_hash_code}.xml'), encoding="ISO-8859-1")
+    mb.Message('Arquivo salvo')
+
+
+def doAlteration():
+    do_data_alteration = dataAlterationCheck_button.getvar('do_alteration')
+    do_value_alteration = valueAlterationCheck_button.getvar('do_value_alteration')
+    doDataAlteration(do_data_alteration)
+
+
+global do_data_alteration, do_value_alteration
+do_data_alteration = 0
+do_value_alteration = 0
+
+# Create window
+window = ttk.Tk()
+window.title('Alterador de guias TISS')
+window.geometry('400x250')
+window.eval('tk::PlaceWindow . center')
+
+#       Create buttons
+
+#   Button block
+button_frame = ttk.Frame(window, background='blue')
+button_frame.pack(side='bottom', pady=20, padx=20)
+
+# Cancel button
+cancel_button = ttk.Button(button_frame, text='Cancelar', command=lambda: cancel())
+cancel_button.pack(side='right', pady=10, padx=10)
+cancel_button['state'] = 'disabled'
+
+# Choose button
+chooseGuide_button = ttk.Button(button_frame, text='Carregar guia', command=lambda: chooseGuide())
+chooseGuide_button.pack(side='right', pady=10, padx=10)
+
+# Save button
+saveGuide_button = ttk.Button(button_frame, text='Salvar guia')
+saveGuide_button.pack(side='right', pady=10, padx=10)
+saveGuide_button['state'] = 'disabled'
+
+# Generate hash button
+generateHashAndSave_button = ttk.Button(button_frame, text='Gerar hash', command=lambda: saveGuide())
+generateHashAndSave_button.pack(side='top', pady=10, padx=10)
+generateHashAndSave_button['state'] = 'disabled'
+
+# Alteration button
+doAlteration_button = ttk.Button(button_frame, text='Realizar alterações', command=lambda: doAlteration())
+doAlteration_button.pack(side='top', pady=10, padx=10)
+doAlteration_button['state'] = 'disabled'
+
+# Alterations modes
+dataAlterationCheck_button = ttk.Checkbutton(window, text='Alteração de dados', variable="do_alteration")
+dataAlterationCheck_button.place(x=150, y=50)
+dataAlterationCheck_button['state'] = 'disabled'
+
+valueAlterationCheck_button = ttk.Checkbutton(window, text='Alteração de valores', variable="do_value_alteration")
+valueAlterationCheck_button.place(x=150, y=30)
+valueAlterationCheck_button['state'] = 'disabled'
+
+
 ans_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}  # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
 source_folder_path = 'sources'
-
-do_data_alteration = input('You want to do data alterations? Write Y(yes) or N(no):\n')
-do_value_alteration = input('You want to do values alterations? Write Y(yes) or N(no):\n')
-
-root_tag = tiss_guide.getroot()
 p = source_folder_path
 reviews_list = []
-if doDataAlteration():
-    # READ PLAN OF DATA ALTERATION IN EXCEL
 
-    table_reviews = PD.read_excel(p + "/PLANILHA_ALTERA_DESPESA.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
-
-    line_count = len(table_reviews.index)
-    columns_count = len(table_reviews.columns)
-    for i in range(0, line_count):
-        for j in range(0, columns_count):
-            # INSERT LINE OF CRITICAL IN A LIST
-            reviews_list.append(table_reviews.iloc[i][j])
-            if len(reviews_list) == 7:  # WHEN LINE IS COMPLETE
-                [account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
-                 new_unity_measure] = returnReviewLine(reviews_list)
-
-                reviews_list.clear()
-                accounts = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaSP-SADT')  # guiaSP-SADT, guiaResumoInternacao
-                for account in accounts:
-                    if account_number != '':
-                        account_procedures = searchAccountProcedures(account)
-                        procedure_data = searchProcedureDataInProcedure(account_procedures)
-
-                        if procedure_data is not None:
-                            alterTableType()
-                            alterUnityMeasure()
-                            alterProcedureCode()
-
-                    else:
-                        all_procedures_in_guide = account.iterfind('ans:outrasDespesas/', ans_prefix)
-                        procedure_data = searchProcedureDataInProcedure(all_procedures_in_guide)
-                        if procedure_data is not None:
-                            alterTableType()
-                            alterUnityMeasure()
-                            alterProcedureCode()
-    do_data_alteration = 'NO'
-
-if doValueAlteration():
+if do_value_alteration == 1:
     # READ PLAN OF VALUES ALTERATIONS IN EXCEL
     table_reviews = PD.read_excel(p + "/PLANILHA_ALTERA_DESPESA.xlsx", sheet_name='2', dtype=str, keep_default_na=False)
 
@@ -271,7 +368,7 @@ if doValueAlteration():
                         procedure_data = searchProcedureDataInProcedure(all_procedures_in_guide)
                         if procedure_data is not None:
                             alterValue()
-    do_value_alteration = 'NO'
+    do_value_alteration = 0
 
-saveGuide()
+window.mainloop()
 
