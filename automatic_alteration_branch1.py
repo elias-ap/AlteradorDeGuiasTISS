@@ -4,7 +4,6 @@ import os
 import pandas as PD
 import hashlib
 import customtkinter as cTk
-import tkinter as ttk
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
 
@@ -12,6 +11,7 @@ from tkinter import messagebox as mb
 
 global ans_prefix
 ans_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}  # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
+
 
 def returnReviewLine(list, mode):
     # IF DEFINED FOR DOING DATA ALTERATIONS:
@@ -154,8 +154,6 @@ def saveGuide():
         tiss_guide.write(guide.split('_')[0].__add__(f'_{new_hash_code}.xml'), encoding="ISO-8859-1")
 
 
-
-
 def createGui():
     global frame, generateHashAndSave_button, chooseGuide_button
 
@@ -164,15 +162,16 @@ def createGui():
 
     # MAIN WINDOW
     window = cTk.CTk()
-    # window.configure(fg_color='')
+    cTk.CTk.iconbitmap(window, r'venv/Lib/site-packages/customtkinter/assets/icons/guide_icon.ico')
+
     window.geometry('300x260')
     window.title('Alterador de Guias TISS')
     window.eval('tk::PlaceWindow . center')
 
     frame = cTk.CTkFrame(window)
-    # frame.configure(fg_color='light blue')
     frame.pack(side='left', fill='both', padx=10, pady=10, expand=True)
-    openPlan_button = cTk.CTkButton(frame, text='Abrir planilha')
+
+    openPlan_button = cTk.CTkButton(frame, text='Abrir planilha', command=lambda: openPlan())
     openPlan_button.pack(side='bottom', pady=5, padx=5)
 
     generateHashAndSave_button = cTk.CTkButton(frame, text='Gerar hash', command=lambda: generateHashAndSave())
@@ -197,10 +196,10 @@ def waitingOperation():
     alteration_button = cTk.CTkButton(frame, text='Realizar alterações', command=lambda: doAlteration())
     alteration_button.pack(side='bottom', pady=5, padx=5)
 
-    data_alteration_check_button = cTk.CTkCheckBox(frame, text='Alteração de dados', text_color='white')
+    data_alteration_check_button = cTk.CTkSwitch(frame, text='Alteração de dados', text_color='white')
     data_alteration_check_button.pack(pady=10, padx=5)
 
-    value_alteration_check_button = cTk.CTkCheckBox(frame, text='Alteração de valor', text_color='white')
+    value_alteration_check_button = cTk.CTkSwitch(frame, text='Alteração de valor', text_color='white')
     value_alteration_check_button.pack(side='top', padx=5, pady=10)
 
     generateHashAndSave_button.destroy()
@@ -208,6 +207,7 @@ def waitingOperation():
 
 def default():
     global chooseGuide_button, generateHashAndSave_button
+
     alteration_button.destroy()
     cancel_button.destroy()
     data_alteration_check_button.destroy()
@@ -223,17 +223,21 @@ def default():
 
 def chooseGuide():
     global guide_path, tiss_guide, root_tag
+
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
     guide_path = fd.askopenfilename(filetypes=file_type)
     if guide_path != '':
         tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
         root_tag = tiss_guide.getroot()
         waitingOperation()
+
     else:
         mb.showwarning(title='Erro', message='A guia não foi escolhida!')
 
 
 def doAlteration():
+    global control_var
+
     data_alteration_check = data_alteration_check_button.get()
     value_alteration_check = value_alteration_check_button.get()
 
@@ -241,7 +245,7 @@ def doAlteration():
     p = source_folder_path
     reviews_list = []
 
-    global control_var
+
     control_var = 0
     def doDataAlteration():
         if data_alteration_check == 1:
@@ -325,19 +329,16 @@ def doAlteration():
     try:
         e = 1
         doDataAlteration()
-        data_alteration_check_button.deselect()
         e = 2
         doValueAlteration()
-        value_alteration_check_button.deselect()
 
     except Exception:
         if e == 1:
             mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de dados')
+
         elif e == 2:
             mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de valores')
 
-
-    print(data_alteration_check, value_alteration_check)
     if data_alteration_check == 0 and value_alteration_check == 0:
         mb.showwarning('Erro', 'Escolha o modo de alteração')
 
@@ -345,12 +346,17 @@ def doAlteration():
         alteration_button.destroy()
         saveGuide_button = cTk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuide())
         saveGuide_button.pack(side='bottom', pady=5, padx=5)
+
     else:
         mb.showinfo('Atenção', 'Não foi realizada nenhuma alteração.')
 
+    value_alteration_check_button.deselect()
+    data_alteration_check_button.deselect()
+
 
 def openPlan():
-    os.system(r'"F:\Teste\Estou Testando\teste.txt"')
+    path = os.path.abspath('Planilha de Críticas.xlsx')
+    os.system(path)
 
 
 def generateHashAndSave():
@@ -362,6 +368,7 @@ def generateHashAndSave():
             guide = guide
             tiss_guide = ET.parse(guide, parser=ET.XMLParser(encoding="ISO-8859-1"))
             saveGuide()
+
         mb.showinfo('Sucesso', 'Arquivos salvos!')
     else:
         mb.showwarning(title='Erro', message='A guia não foi escolhida!')

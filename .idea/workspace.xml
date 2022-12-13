@@ -5,13 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="686c6a19-d19b-4982-af49-139191aec9d9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/python-automatics-data-alterations-in-xml-file.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/python-automatics-data-alterations-in-xml-file.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/automatic-alteration.py" beforeDir="false" afterPath="$PROJECT_DIR$/automatic-alteration.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/automatic_alteration_branch1.py" beforeDir="false" afterPath="$PROJECT_DIR$/automatic_alteration_branch1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/GUIA_TESTE.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python-gui.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/teste.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +33,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="NamedScopeManager">
+    <scope name="Scope" pattern="file[python-automatics-data-alterations-in-xml-file]:automatic-alteration.py||file[python-automatics-data-alterations-in-xml-file]:automatic_alteration_branch1.py" />
+  </component>
   <component name="ProjectId" id="2I5quQRddH8cVgML902CoJrXt1n" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -40,12 +45,13 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/elias/Documents/GitHub/venv",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "last_opened_file_path": "C:/Users/eliasp/Documents/GitHub/python-automatics-data-alterations-in-xml-file",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PythonContentEntriesConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file" />
       <recent name="C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file\tests" />
     </key>
   </component>
