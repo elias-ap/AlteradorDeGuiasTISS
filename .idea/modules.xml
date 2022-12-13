@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$USER_HOME$/PycharmProjects/custom_gui/.idea/custom_gui.iml" filepath="$USER_HOME$/PycharmProjects/custom_gui/.idea/custom_gui.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/python-automatics-data-alterations-in-xml-file.iml" filepath="$PROJECT_DIR$/.idea/python-automatics-data-alterations-in-xml-file.iml" />
     </modules>
   </component>

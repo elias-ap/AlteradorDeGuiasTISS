@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
 <ns0:mensagemTISS xmlns:ns0="http://www.ans.gov.br/padroes/tiss/schemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ans.gov.br/padroes/tiss/schemas http://www.ans.gov.br/padroes/tiss/schemas/tissV3_02_00.xsd">
   <ns0:cabecalho>
     <ns0:identificacaoTransacao>
@@ -23,7 +24,7 @@
         <ns0:guiaSP-SADT>
           <ns0:cabecalhoGuia>
             <ns0:registroANS>000000</ns0:registroANS>
-            <ns0:numeroGuiaPrestador>000000</ns0:numeroGuiaPrestador>
+            <ns0:numeroGuiaPrestador>22222222</ns0:numeroGuiaPrestador>
           </ns0:cabecalhoGuia>
           <ns0:dadosBeneficiario>
             <ns0:numeroCarteira>000000</ns0:numeroCarteira>
@@ -230,7 +231,7 @@
               </ns0:servicosExecutados>
             </ns0:despesa>
           </ns0:outrasDespesas>
-          <ns0:observacao>Esta Guia destina-se exclusivamente a documentar a cobran&#195;&#167;a de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ns0:observacao>
+          <ns0:observacao>Esta Guia destina-se exclusivamente a documentar a cobrança de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ns0:observacao>
           <ns0:valorTotal>
             <ns0:valorTaxasAlugueis>147.82</ns0:valorTaxasAlugueis>
             <ns0:valorMateriais>391.55</ns0:valorMateriais>
@@ -450,7 +451,7 @@
               </ns0:servicosExecutados>
             </ns0:despesa>
           </ns0:outrasDespesas>
-          <ns0:observacao>Esta Guia destina-se exclusivamente a documentar a cobran&#195;&#167;a de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ns0:observacao>
+          <ns0:observacao>Esta Guia destina-se exclusivamente a documentar a cobrança de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ns0:observacao>
           <ns0:valorTotal>
             <ns0:valorTaxasAlugueis>160.77</ns0:valorTaxasAlugueis>
             <ns0:valorMateriais>23.00</ns0:valorMateriais>
@@ -462,6 +463,6 @@
     </ns0:loteGuias>
   </ns0:prestadorParaOperadora>
   <ns0:epilogo>
-    <ns0:hash>37258FF81125956EA7190BE174E69E68</ns0:hash>
+    <ns0:hash>6b8dd55df54dda3291a4896784c7b84f</ns0:hash>
   </ns0:epilogo>
 </ns0:mensagemTISS>
