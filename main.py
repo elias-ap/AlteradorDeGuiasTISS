@@ -99,6 +99,8 @@ def alterValue():
         else:
             value_difference = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
 
+        altered_data = 'unitary value'
+        generateAlterationLog(altered_data, unitary_value, new_unitary_value)
     def recalculateAllTotalValues(valueDifference):
         account_total_values_tag = acnt.find('ans:valorTotal', ans_prefix)
         general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
@@ -110,18 +112,21 @@ def alterValue():
                     general_total_values_tag.text = f'{float(general_total_values_tag.text) + float(valueDifference):.2f}'
                     wasRecalculated = True
 
-        recalculateAllTotalValues(value_difference)
-        altered_data = 'unitary value'
-        generateAlterationLog(altered_data, unitary_value, new_unitary_value)
+    recalculateAllTotalValues(value_difference)
 
 
 def generateAlterationLog(altered_data, old_value, new_value):
+    if "alteration_log_list" not in globals():
+        global alteration_log_list
+        alteration_log_list = []
+
     old = old_value
     new = new_value
     if account_number != '':
-        return print(f'Account:{account_number} Procedure:{procedure_code} {altered_data}:{old} altered for:{new}')
+        alteration_log_list.append(f'Account:{account_number} Procedure:{procedure_code} {altered_data}:{old} altered for:{new}')
     else:
-        return print(f'Procedure:{procedure_code} {altered_data}:{old} altered for:{new}')
+        alteration_log_list.append(f'Procedure:{procedure_code} {altered_data}:{old} altered for:{new}')
+
 
 
 def saveGuide():
@@ -142,15 +147,39 @@ def saveGuide():
         new_hash_code = h.hexdigest()
         return new_hash_code
 
+    def createLogFile(guide_path):
+        log_folder_path = os.path.abspath(r'Logs')
+        log_name = guide_path.split("_")[0]
+        log_name = log_name.rsplit('/', 1)[1]
+        if os.path.isfile(f'{log_folder_path}/{log_name}.txt'):
+            log_file = open(f'{log_folder_path}/{log_name}.txt', 'a')
+        else:
+            log_file = open(f'{log_folder_path}/{log_name}.txt', 'x')
+            log_file.write('---------------------------- LOG DE ALTERAÇÕES ----------------------------\n')
+
+        log_file_readable = open(f'{log_folder_path}/{log_name}.txt', 'r')
+
+        for line in log_file_readable.readlines():
+            if line.replace("\n", '') in alteration_log_list:
+                alteration_log_list.remove(line.replace("\n",''))
+
+        for alteration in alteration_log_list:
+            log_file.write(alteration + '\n')
+
+        log_file.close()
+
     root_tag = removeHashTextFromGuide(tiss_guide.getroot())
     all_tags = root_tag.iter()
     new_hash_code = generateNewHashCode(all_tags)
     root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
     if type(guide_path) == str:
-        tiss_guide.write(guide_path.split('_')[0].__add__(f'_{new_hash_code}.xml'), encoding="ISO-8859-1")
+        tiss_guide.write(guide_path.split('_')[0] + f'_{new_hash_code}.xml', encoding="ISO-8859-1")
+        createLogFile(guide_path)
         mb.showinfo(message='Arquivo salvo!')
+        cancelAlteration()
     else:
         tiss_guide.write(guide.split('_')[0].__add__(f'_{new_hash_code}.xml'), encoding="ISO-8859-1")
+
 
 
 def createDefaultButtons():
@@ -176,6 +205,7 @@ def createGui():
     window.geometry('300x260')
     window.title('Alterador de Guias TISS')
     window.eval('tk::PlaceWindow . center')
+    window.maxsize(300, 260)
 
     # MAIN FRAME
     frame = cTk.CTkFrame(window)
@@ -216,11 +246,15 @@ def waitingAlterationConfig():
 
 def cancelAlteration():
     global chooseGuide_button, generateHashAndSave_button
-
     # REDEFINE BUTTONS
-    for button in (alteration_button, cancel_button, data_alteration_check_button, value_alteration_check_button,
-                   check_button_information):
-        button.destroy()
+    if "saveGuide_button" not in globals():
+        for button in (alteration_button, cancel_button, data_alteration_check_button, value_alteration_check_button,
+                       check_button_information):
+            button.destroy()
+    else:
+        for button in (saveGuide_button, cancel_button, data_alteration_check_button, value_alteration_check_button,
+                       check_button_information):
+            button.destroy()
 
     createDefaultButtons()
 
@@ -240,8 +274,7 @@ def chooseGuide():
 
 
 def doAlteration():
-    global control_var
-
+    global control_var, saveGuide_button
     data_alteration_check = data_alteration_check_button.get()
     value_alteration_check = value_alteration_check_button.get()
 
@@ -252,9 +285,10 @@ def doAlteration():
     control_var = 0
 
     def doDataAlteration():
+        global control_var
         if data_alteration_check == 1:
             # READ PLAN OF DATA ALTERATION IN EXCEL
-            table_reviews = PD.read_excel(p + "/Planilha de Críticas.xlsx", sheet_name='1', dtype=str,
+            table_reviews = PD.read_excel("Planilha de Críticas.xlsx", sheet_name='1', dtype=str,
                                           keep_default_na=False)
 
             line_count = len(table_reviews.index)
@@ -293,9 +327,10 @@ def doAlteration():
             control_var += 1
 
     def doValueAlteration():
-        if value_alteration_check == '1':
+        global control_var
+        if value_alteration_check == 1:
             # READ PLAN OF VALUES ALTERATIONS IN EXCEL
-            table_reviews = PD.read_excel(p + "/Planilha de Críticas.xlsx", sheet_name='2', dtype=str,
+            table_reviews = PD.read_excel("Planilha de Críticas.xlsx", sheet_name='2', dtype=str,
                                           keep_default_na=False)
 
             line_count = len(table_reviews.index)
@@ -330,18 +365,18 @@ def doAlteration():
                                     alterValue()
             control_var += 1
 
-    try:
-        e = 1
-        doDataAlteration()
-        e = 2
-        doValueAlteration()
+    # try:
+    e = 1
+    doDataAlteration()
+    e = 2
+    doValueAlteration()
+    # except Exception:
+        # if e == 1:
+        #     mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de dados')
 
-    except Exception:
-        if e == 1:
-            mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de dados')
 
-        elif e == 2:
-            mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de valores')
+        # elif e == 2:
+        #     mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de valores')
 
     if data_alteration_check == 0 and value_alteration_check == 0:
         mb.showwarning('Erro', 'Escolha o modo de alteração')
@@ -359,8 +394,8 @@ def doAlteration():
 
 
 def openPlan():
-    path = os.path.abspath('sources/Planilha de Críticas.xlsx')
-    os.system(f'"{path}"')
+    path = os.path.abspath('Planilha de Críticas.xlsx')
+    os.startfile(f"{path}")
 
 
 def generateHashAndSave():

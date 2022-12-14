@@ -6,21 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="686c6a19-d19b-4982-af49-139191aec9d9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/python-automatics-data-alterations-in-xml-file.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/python-automatics-data-alterations-in-xml-file.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/automatic-alteration.py" beforeDir="false" afterPath="$PROJECT_DIR$/automatic-alteration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatic_alteration_branch1.py" beforeDir="false" afterPath="$PROJECT_DIR$/automatic_alteration_branch1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/guide_icon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/icon.ico" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_7.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatic_alteration_branch1.py" beforeDir="false" afterPath="$PROJECT_DIR$/automatic_alteration_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sources/PLANILHA_ALTERA_DESPESA.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/sources/Planilha de Críticas.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/GUIA_d8cade6ca875fb8add14c00b99d6fbdc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/0001_d8cade6ca875fb8add14c00b99d6fbdc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/main.exe" beforeDir="false" afterPath="$PROJECT_DIR$/output/main.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/0001.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/0001_a5fbec5215f9c66b4e9e7a4814f9c21e.xml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/0001_a5fbec5215f9c66b4e9e7a4814f9c21e.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +25,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -48,6 +43,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "last_opened_file_path": "C:/Users/elias/PycharmProjects/custom_gui",
@@ -60,7 +56,7 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="automatic_alteration_branch1" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="automatic_alteration_test" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="python-automatics-data-alterations-in-xml-file" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -72,7 +68,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/automatic_alteration_branch1.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file\automatic_alteration_test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -103,7 +99,7 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.automatic_alteration_branch1" />
+      <item itemvalue="Python.automatic_alteration_test" />
       <item itemvalue="Python.teste" />
     </list>
   </component>

@@ -1,0 +1,3 @@
+---------------------------- LOG DE ALTERAÇÕES ----------------------------
+Account:22222222 Procedure:99999917 unitary value:24.91 altered for:10
+Account:22222222 Procedure:60023406 unitary value:124.24 altered for:100
