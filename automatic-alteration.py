@@ -153,25 +153,8 @@ def saveGuide():
         tiss_guide.write(guide.split('_')[0].__add__(f'_{new_hash_code}.xml'), encoding="ISO-8859-1")
 
 
-def createGui():
-    global frame, generateHashAndSave_button, chooseGuide_button
-
-    cTk.set_appearance_mode('dark')
-    cTk.set_default_color_theme('green')
-
-    # MAIN WINDOW
-    window = cTk.CTk()
-    cTk.CTk.iconbitmap(window, r'venv/Lib/site-packages/customtkinter/assets/icons/guide_icon.ico')
-
-    window.geometry('300x260')
-    window.title('Alterador de Guias TISS')
-    window.eval('tk::PlaceWindow . center')
-
-    frame = cTk.CTkFrame(window)
-    frame.pack(side='left', fill='both', padx=10, pady=10, expand=True)
-
-    openPlan_button = cTk.CTkButton(frame, text='Abrir planilha', command=lambda: openPlan())
-    openPlan_button.pack(side='bottom', pady=5, padx=5)
+def createDefaultButtons():
+    global generateHashAndSave_button, chooseGuide_button
 
     generateHashAndSave_button = cTk.CTkButton(frame, text='Gerar hash', command=lambda: generateHashAndSave())
     generateHashAndSave_button.pack(side='bottom', pady=5, padx=5)
@@ -179,14 +162,40 @@ def createGui():
     chooseGuide_button = cTk.CTkButton(frame, text='Carregar Guia', command=lambda: chooseGuide())
     chooseGuide_button.pack(side='bottom', pady=5, padx=5)
 
+
+def createGui():
+    global frame, generateHashAndSave_button, chooseGuide_button
+
+    # GUI COLOR CONFIG
+    cTk.set_appearance_mode('dark')
+    cTk.set_default_color_theme('green')
+
+    # MAIN WINDOW
+    window = cTk.CTk()
+    cTk.CTk.iconbitmap(window, r'icon.ico')
+    window.geometry('300x260')
+    window.title('Alterador de Guias TISS')
+    window.eval('tk::PlaceWindow . center')
+
+    # MAIN FRAME
+    frame = cTk.CTkFrame(window)
+    frame.pack(side='left', fill='both', padx=10, pady=10, expand=True)
+
+    # DEFAULT BUTTONS
+    openPlan_button = cTk.CTkButton(frame, text='Abrir planilha', command=lambda: openPlan())
+    openPlan_button.pack(side='bottom', pady=5, padx=5)
+
+    createDefaultButtons()
+
     return window
 
 
-def waitingOperation():
+def waitingAlterationConfig():
     global cancel_button, check_button_information, alteration_button, saveGuide_button, \
         data_alteration_check_button, value_alteration_check_button
 
-    cancel_button = cTk.CTkButton(frame, text='Cancelar', command=lambda: default())
+    # BUTTONS AFTER CHOOSE GUIDE
+    cancel_button = cTk.CTkButton(frame, text='Cancelar', command=lambda: cancelAlteration())
     cancel_button.pack(side='bottom', pady=5, padx=5)
 
     check_button_information = cTk.CTkLabel(frame, text='Escolha os modos de alteração:')
@@ -205,20 +214,15 @@ def waitingOperation():
     chooseGuide_button.destroy()
 
 
-def default():
+def cancelAlteration():
     global chooseGuide_button, generateHashAndSave_button
 
-    alteration_button.destroy()
-    cancel_button.destroy()
-    data_alteration_check_button.destroy()
-    value_alteration_check_button.destroy()
-    check_button_information.destroy()
+    # REDEFINE BUTTONS
+    for button in (alteration_button, cancel_button, data_alteration_check_button, value_alteration_check_button,
+                   check_button_information):
+        button.destroy()
 
-    generateHashAndSave_button = cTk.CTkButton(frame, text='Gerar hash', command=lambda: generateHashAndSave())
-    generateHashAndSave_button.pack(side='bottom', pady=5, padx=5)
-
-    chooseGuide_button = cTk.CTkButton(frame, text='Carregar Guia', command=lambda: chooseGuide())
-    chooseGuide_button.pack(side='bottom', pady=5, padx=5)
+    createDefaultButtons()
 
 
 def chooseGuide():
@@ -229,7 +233,7 @@ def chooseGuide():
     if guide_path != '':
         tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
         root_tag = tiss_guide.getroot()
-        waitingOperation()
+        waitingAlterationConfig()
 
     else:
         mb.showwarning(title='Erro', message='A guia não foi escolhida!')
@@ -250,7 +254,7 @@ def doAlteration():
     def doDataAlteration():
         if data_alteration_check == 1:
             # READ PLAN OF DATA ALTERATION IN EXCEL
-            table_reviews = PD.read_excel(p + "/PLANILHA_ALTERA_DESPESA.xlsx", sheet_name='1', dtype=str,
+            table_reviews = PD.read_excel(p + "/Planilha de Críticas.xlsx", sheet_name='1', dtype=str,
                                           keep_default_na=False)
 
             line_count = len(table_reviews.index)
@@ -291,7 +295,7 @@ def doAlteration():
     def doValueAlteration():
         if value_alteration_check == '1':
             # READ PLAN OF VALUES ALTERATIONS IN EXCEL
-            table_reviews = PD.read_excel(p + "/PLANILHA_ALTERA_DESPESA.xlsx", sheet_name='2', dtype=str,
+            table_reviews = PD.read_excel(p + "/Planilha de Críticas.xlsx", sheet_name='2', dtype=str,
                                           keep_default_na=False)
 
             line_count = len(table_reviews.index)
@@ -355,8 +359,8 @@ def doAlteration():
 
 
 def openPlan():
-    path = os.path.abspath('Planilha de Críticas.xlsx')
-    os.system(path)
+    path = os.path.abspath('sources/Planilha de Críticas.xlsx')
+    os.system(f'"{path}"')
 
 
 def generateHashAndSave():
@@ -369,7 +373,10 @@ def generateHashAndSave():
             tiss_guide = ET.parse(guide, parser=ET.XMLParser(encoding="ISO-8859-1"))
             saveGuide()
 
-        mb.showinfo('Sucesso', 'Arquivos salvos!')
+        if len(guide_path) > 1:
+            mb.showinfo('Sucesso', 'Arquivos salvos!')
+        else:
+            mb.showinfo('Sucesso', 'Arquivo salvo!')
     else:
         mb.showwarning(title='Erro', message='A guia não foi escolhida!')
 
@@ -378,4 +385,3 @@ def generateHashAndSave():
 
 GUI = createGui()
 GUI.mainloop()
-
