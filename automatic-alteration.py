@@ -7,8 +7,6 @@ import customtkinter as cTk
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
 
-""" FUNCTIONS THAT WILL BE USED BY SOFTWARE """
-
 global ans_prefix
 ans_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}  # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
 
@@ -26,6 +24,7 @@ def returnReviewLine(list, mode):
 def isExists(obj):
     if obj is not None:
         return True
+
     else:
         return False
 
@@ -56,8 +55,9 @@ def searchProcedureDataInProcedure(account):
 
 
 def alterTableType():
-    altered_data = 'table type'
+    altered_data = 'tipo de tabela'
     tag_table_type = procedure_data.find('ans:codigoTabela', ans_prefix)
+
     if new_table_type != '' and new_table_type != tag_table_type.text:
         if new_table_type == 0:
             tag_table_type.text.replace(str(table_type), str(new_table_type)).replace('0', '00')
@@ -70,18 +70,21 @@ def alterTableType():
 
 def alterProcedureCode():
     tag_procedure_code = procedure_data.find('ans:codigoProcedimento', ans_prefix)
+
     if new_procedure_code != '' and new_procedure_code != tag_procedure_code.text:
         tag_procedure_code.text = tag_procedure_code.text.replace(str(procedure_code), str(new_procedure_code))
-        altered_data = 'procedure code'
+        altered_data = 'código do procedimento'
         generateAlterationLog(altered_data, procedure_code, new_procedure_code)
 
 
 def alterUnityMeasure():
     tag_unity_measure = procedure_data.find('ans:unidadeMedida', ans_prefix)
+
     if new_unity_measure != '' and new_unity_measure != tag_unity_measure.text:
         tag_unity_measure.text = tag_unity_measure.text.replace(str(unity_measure), str(new_unity_measure)).rjust(
             len(tag_unity_measure.text), '0')
-        altered_data = 'unity measure'
+
+        altered_data = 'unidade de medida'
         generateAlterationLog(altered_data, unity_measure, new_unity_measure)
 
 
@@ -89,6 +92,7 @@ def alterValue():
     unitary_value_tag = procedure_data.find('ans:valorUnitario', ans_prefix)
     procedure_total_value_tag = procedure_data.find('ans:valorTotal', ans_prefix)
     current_procedure_total_value = procedure_total_value_tag.text
+
     if unitary_value_tag.text == unitary_value:
         executed_quantity = procedure_data.find('ans:quantidadeExecutada', ans_prefix).text
         unitary_value_tag.text = f'{float(new_unitary_value):.2f}'
@@ -96,15 +100,18 @@ def alterValue():
 
         if current_procedure_total_value > procedure_total_value_tag.text:
             value_difference = f'{float(current_procedure_total_value) - float(procedure_total_value_tag.text):.2f}'
+
         else:
             value_difference = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
 
-        altered_data = 'unitary value'
+        altered_data = 'valor unitário'
         generateAlterationLog(altered_data, unitary_value, new_unitary_value)
+
     def recalculateAllTotalValues(valueDifference):
         account_total_values_tag = acnt.find('ans:valorTotal', ans_prefix)
         general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
         wasRecalculated = False
+
         for total_value in account_total_values_tag:
             if wasRecalculated == False:
                 if total_value.text > valueDifference:
@@ -123,10 +130,11 @@ def generateAlterationLog(altered_data, old_value, new_value):
     old = old_value
     new = new_value
     if account_number != '':
-        alteration_log_list.append(f'Account:{account_number} Procedure:{procedure_code} {altered_data}:{old} altered for:{new}')
-    else:
-        alteration_log_list.append(f'Procedure:{procedure_code} {altered_data}:{old} altered for:{new}')
+        alteration_log_list.append(
+            f'Número da conta:{account_number} Procedimento:{procedure_code} {altered_data}:{old} alterado para:{new}')
 
+    else:
+        alteration_log_list.append(f'Procedimento:{procedure_code} {altered_data}:{old} alterado para:{new}')
 
 
 def saveGuide():
@@ -161,7 +169,7 @@ def saveGuide():
 
         for line in log_file_readable.readlines():
             if line.replace("\n", '') in alteration_log_list:
-                alteration_log_list.remove(line.replace("\n",''))
+                alteration_log_list.remove(line.replace("\n", ''))
 
         for alteration in alteration_log_list:
             log_file.write(alteration + '\n')
@@ -179,7 +187,6 @@ def saveGuide():
         cancelAlteration()
     else:
         tiss_guide.write(guide.split('_')[0].__add__(f'_{new_hash_code}.xml'), encoding="ISO-8859-1")
-
 
 
 def createDefaultButtons():
@@ -252,8 +259,7 @@ def cancelAlteration():
                        check_button_information):
             button.destroy()
     else:
-        for button in (saveGuide_button, cancel_button, data_alteration_check_button, value_alteration_check_button,
-                       check_button_information):
+        for button in (saveGuide_button, cancel_button):
             button.destroy()
 
     createDefaultButtons()
@@ -277,19 +283,14 @@ def doAlteration():
     global control_var, saveGuide_button
     data_alteration_check = data_alteration_check_button.get()
     value_alteration_check = value_alteration_check_button.get()
-
-    source_folder_path = 'sources'
-    p = source_folder_path
     reviews_list = []
-
     control_var = 0
 
     def doDataAlteration():
         global control_var
         if data_alteration_check == 1:
             # READ PLAN OF DATA ALTERATION IN EXCEL
-            table_reviews = PD.read_excel("Planilha de Críticas.xlsx", sheet_name='1', dtype=str,
-                                          keep_default_na=False)
+            table_reviews = PD.read_excel("Planilha de Críticas.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
 
             line_count = len(table_reviews.index)
             columns_count = len(table_reviews.columns)
@@ -304,8 +305,10 @@ def doAlteration():
 
                         reviews_list.clear()
                         global accounts
-                        accounts = root_tag.iter(
-                            '{http://www.ans.gov.br/padroes/tiss/schemas}guiaSP-SADT')  # guiaSP-SADT, guiaResumoInternacao
+                        accounts = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaSP-SADT')
+                        if accounts is None:
+                            accounts = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaResumoInternacao')
+
                         for account in accounts:
                             if account_number != '':
                                 global account_procedures
@@ -316,15 +319,19 @@ def doAlteration():
                                     alterTableType()
                                     alterUnityMeasure()
                                     alterProcedureCode()
+                                    control_var += 1
 
                             else:
                                 all_procedures_in_guide = account.iterfind('ans:outrasDespesas/', ans_prefix)
+                                if all_procedures_in_guide is None:
+                                    all_procedures_in_guide = account.iterfind('ans:guiaResumoInternacao', ans_prefix)
+
                                 procedure_data = searchProcedureDataInProcedure(all_procedures_in_guide)
                                 if procedure_data is not None:
                                     alterTableType()
                                     alterUnityMeasure()
                                     alterProcedureCode()
-            control_var += 1
+                                    control_var += 1
 
     def doValueAlteration():
         global control_var
@@ -356,41 +363,45 @@ def doAlteration():
                             if account_number != '':
                                 account_procedures = searchAccountProcedures(account)
                                 procedure_data = searchProcedureDataInProcedure(account_procedures)
+
                                 if procedure_data is not None:
                                     alterValue()
+                                    control_var += 1
                             else:
                                 all_procedures_in_guide = account.iterfind('ans:outrasDespesas/', ans_prefix)
+                                if all_procedures_in_guide is None:
+                                    all_procedures_in_guide = account.iterfind('ans:guiaResumoInternacao', ans_prefix)
+
                                 procedure_data = searchProcedureDataInProcedure(all_procedures_in_guide)
                                 if procedure_data is not None:
                                     alterValue()
-            control_var += 1
+                                    control_var += 1
 
-    # try:
-    e = 1
-    doDataAlteration()
-    e = 2
-    doValueAlteration()
-    # except Exception:
-        # if e == 1:
-        #     mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de dados')
+    try:
+        e = 1
+        doDataAlteration()
+        e = 2
+        doValueAlteration()
+    except Exception:
+        if e == 1:
+            mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de dados')
 
 
-        # elif e == 2:
-        #     mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de valores')
+        elif e == 2:
+            mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de valores')
 
     if data_alteration_check == 0 and value_alteration_check == 0:
         mb.showwarning('Erro', 'Escolha o modo de alteração')
 
     elif control_var > 0:
-        alteration_button.destroy()
+        for button in (alteration_button, value_alteration_check_button,
+                       data_alteration_check_button, check_button_information):
+            button.destroy()
         saveGuide_button = cTk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuide())
         saveGuide_button.pack(side='bottom', pady=5, padx=5)
 
     else:
         mb.showinfo('Atenção', 'Não foi realizada nenhuma alteração.')
-
-    value_alteration_check_button.deselect()
-    data_alteration_check_button.deselect()
 
 
 def openPlan():

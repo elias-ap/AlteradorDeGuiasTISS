@@ -24,7 +24,7 @@ conforme os chamados: 2022040943, 2022110809, 2022100571 e 2022110753.
 <h3>Localização do software</h3>
 
 O executável do software poderá ser usado sem a necessidade de instalação
-de outros programas e está localizado na seguinte pasta compartilhada:
+de outros programas sendo necessário ter apenas o acesso a seguinte pasta compartilhada na rede:
 <br>
 <br>
 <a>O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS</a><br><br>
@@ -33,53 +33,63 @@ de outros programas e está localizado na seguinte pasta compartilhada:
 
 <h4>Leitura de críticas</h4>
 
-<p>Para realização das alterações, será preciso adicionar as críticas manualmente nas tabelas da planilha localizada no diretório
+<p>Para realização das alterações, será preciso adicionar as críticas manualmente nas tabelas da <b>Planilha de Críticas</b> localizada no diretório
 raiz do programa.</p>
-
 <i>Tabela 1º Aba - Alteração de dados</i>
-<img src="resources\screenshot_excel_plan_data.png">
+<img src="Resources\screenshot_excel_plan_data.png">
 
-<p>Essa tabela é lida para alteração dos dados de procedimentos como: código de procedimento, tipo de tabela e unidade de medida. Seus campos devem ser preenchidos de acordo com as colunas.</p>
-
+<p>Essa tabela é lida para alteração dos dados de procedimentos como: código de procedimento, tipo de tabela e
+unidade de medida. Seus campos devem ser preenchidos de acordo com as colunas, caso o número da conta
+não seja especificado, todos os procedimentos com codigo correspondente serão alterados.</p>
 <i>Tabela 2º Aba - Alteração de valores</i>
-<img src="resources\screenshot_excel_plan_value.png">
-
+<br>
+<img src="Resources\screenshot_excel_plan_value.png">
+<br>
 <p>Essa tabela é lida para alteração de valores dos procedimentos. Caso os valores informados possuam casas decimais,
-eles devem ser escritos com no máximo duas casas, separando o valor decimal com uma vírgula.</p>
+eles devem ser escritos com no máximo duas casas, separando o valor decimal com uma vírgula e se
+o número da conta não seja especificado, todos os procedimentos com codigo correspondente serão alterados.</p>
 
 <h4>Botões</h4>
+
 <p>Ao abrir o programa verá a janela principal e alguns botões:
 <br>
 <br>
-<img src="resources/screenshot_main_window.png">
+<img src="Resources/screenshot_main_window.png">
+<li><b>Carregar Guia:</b> abre uma janela para escolha de <b>uma</b> guia que deseja realizar alterações;</li>
 <br>
-<ul>
-    <li><b>Carregar Guia:</b> abre uma janela para escolha de <b>uma</b> guia que deseja realizar alterações;</li>
-    <br>
-    <li><b>Gerar hash:</b> abre uma janela para escolha de <b>uma ou mais</b> guias, após a escolha
-    automaticamente gera um novo código hash e salva a guia no diretório de origem;</li>
-    <br>
-    <li><b>Abrir planilha:</b> abre a planilha de alterações no diretório raiz.</li>
-    <br>
-</ul>
+<li><b>Gerar hash:</b> abre uma janela para escolha de <b>uma ou mais</b> guias, após a escolha
+automaticamente gera um novo código hash e salva a guia no diretório de origem;</li>
+<br>
+<li><b>Abrir planilha:</b> abre a planilha de alterações no diretório raiz;</li>
+<br>
 Após carregar uma guia é desbloqueado outras interações:
 <br>
 <br>
-<img src="resources/screenshot_after_choose_guide.png">
-<ul>
-    <li><b>Alteração de dados:</b> define se a tabela de alteração de dados será lida e serão feitas as alterações;</li>
-    <br>
-    <li><b>Alteração de valor:</b> define se a tabela de alteração de valores será lida e serão feitas as alterações</li>
-    <br>
-    <li><b>Realizar alterações:</b> faz as alterações;</li>
-    <br>
-    <li><b>Cancelar:</b> retorna a janela padrão.</li>
-</ul>
+<img src="Resources/screenshot_after_choose_guide.png">
+<br>
+<br>
+<li><b>Alteração de dados:</b> define se a tabela de alteração de dados será lida e serão feitas as alterações de dados;</li>
+<br>
+<li><b>Alteração de valor:</b> define se a tabela de alteração de valores será lida e serão feitas as alterações de valor;</li>
+<br>
+<li><b>Realizar alterações:</b> faz as alterações;</li>
+<br>
+<li><b>Cancelar:</b> retorna a janela padrão;</li>
+<br>
+Depois de realizar as alterações fica disponibilizado o botão de salvamento:
+<br>
+<br>
+<img src="Resources/screenshot_save_button.png">
+<br>
+<br>
+<li><b>Salvar Guia:</b> salva a guia, gerando um novo código hash e o log
+das alterações realizadas no diretorio raiz do software;</li>
 <h1>Observações</h1>
-<p>Para atender aos modelos de chamados citados no início e utilizar o software com máxima eficiência, muitas vezes será
+<p>Para atender aos modelos de chamados citados no início e utilizar o software com máxima eficiência, será
 possível o uso do clipboard na captura das críticas informadas no chamado e o inserçao das mesmas na
-planilha de alterações, porém caso o formato não seja tabular, pode se utilzar o recurso no excel Texto para Colunas
+planilha de alterações, porém caso o formato não seja tabular, pode se utilzar o recurso no excel <b>Texto para Colunas</b>
 e extrair/formatar as críticas corretamente.</p>
+<p>A versão atual (v.1.0) suporta alterações nos itens definidos como despesas de guias do tipo SP-SADT e Guia Resumo de Internação.</p>
 <br><br><br><br><br><br><br>
 </body>
 </html>
