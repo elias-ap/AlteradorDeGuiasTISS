@@ -1,0 +1,17 @@
+---------------------------- LOG DE ALTERAÇÕES ----------------------------
+Procedimento:98020315 tipo de tabela:18 alterado para:00
+Procedimento:74406884 tipo de tabela:19 alterado para:00
+Procedimento:74406884 código do procedimento:74406884 alterado para:1200144279
+Procedimento:90461193 unidade de medida:36 alterado para:1
+Procedimento:90372310 unidade de medida:36 alterado para:4
+Procedimento:90289870 unidade de medida:36 alterado para:1
+Procedimento:78997500 valor unitário:0.84 alterado para:0.36
+Procedimento:90065492 valor unitário:20.56 alterado para:19.74
+Procedimento:90179994 valor unitário:17.19 alterado para:16.09
+Procedimento:90227352 valor unitário:12.53 alterado para:12.04
+Procedimento:90097467 valor unitário:117.55 alterado para:106.29
+Procedimento:90045505 valor unitário:21.38 alterado para:19.34
+Procedimento:90122941 valor unitário:69.06 alterado para:66.3
+Procedimento:90516532 valor unitário:9 alterado para:8.64
+Procedimento:90209117 valor unitário:13.47 alterado para:12.94
+Procedimento:90395972 valor unitário:9.16 alterado para:8.79

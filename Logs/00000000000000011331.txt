@@ -1,0 +1,14 @@
+---------------------------- LOG DE ALTERAÇÕES ----------------------------
+
+Procedimento:90372310 unidade de medida:36 alterado para:4
+Procedimento:78214190 tipo de tabela:19 alterado para:00
+Procedimento:78214190 código do procedimento:78214190 alterado para:1200110578
+Procedimento:90018370 unidade de medida:36 alterado para:14
+Procedimento:78992818 tipo de tabela:19 alterado para:00
+Procedimento:78992818 código do procedimento:78992818 alterado para:1200054758
+
+Procedimento:90099419 valor unitário:3.66 alterado para:3.52
+Procedimento:90516532 valor unitário:9.00 alterado para:8.64
+Procedimento:90209117 valor unitário:13.47 alterado para:12.94
+Procedimento:78997500 valor unitário:0.84 alterado para:0.36
+Procedimento:90257537 valor unitário:19.32 alterado para:18.55

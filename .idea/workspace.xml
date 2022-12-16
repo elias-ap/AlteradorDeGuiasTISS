@@ -5,16 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="686c6a19-d19b-4982-af49-139191aec9d9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/python-automatics-data-alterations-in-xml-file.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/python-automatics-data-alterations-in-xml-file.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logs/0001.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/0001.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/automatic-alteration.py" beforeDir="false" afterPath="$PROJECT_DIR$/automatic-alteration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatic_alteration_branch1.py" beforeDir="false" afterPath="$PROJECT_DIR$/automatic_alteration_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/main.exe" beforeDir="false" afterPath="$PROJECT_DIR$/output/main.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/0001.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/0001_a5fbec5215f9c66b4e9e7a4814f9c21e.xml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/0001_a5fbec5215f9c66b4e9e7a4814f9c21e.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatic_alteration_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/automatic_alteration_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sources/Teste.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/sources/Teste.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unity-test.py" beforeDir="false" afterPath="$PROJECT_DIR$/unity-test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,8 +21,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -41,21 +38,42 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/elias/PycharmProjects/custom_gui",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;O:/Informatica/Geral/Funcionais/Faturamento de Convênios/Alterador de Guias TISS/README.html&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file\tests" />
     </key>
   </component>
   <component name="RunManager">
+    <configuration name="automatic_alteration_test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="python-automatics-data-alterations-in-xml-file" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/automatic_alteration_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="automatic_alteration_test" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="python-automatics-data-alterations-in-xml-file" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -98,10 +116,39 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="unity-test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="python-automatics-data-alterations-in-xml-file" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/unity-test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.automatic_alteration_test" />
       <item itemvalue="Python.teste" />
+      <item itemvalue="Python.automatic_alteration_test (1)" />
+      <item itemvalue="Python.unity-test" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.automatic_alteration_test (1)" />
+        <item itemvalue="Python.unity-test" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

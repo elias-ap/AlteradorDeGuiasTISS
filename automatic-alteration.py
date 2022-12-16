@@ -89,23 +89,28 @@ def alterUnityMeasure():
 
 
 def alterValue():
+    global value_difference
     unitary_value_tag = procedure_data.find('ans:valorUnitario', ans_prefix)
     procedure_total_value_tag = procedure_data.find('ans:valorTotal', ans_prefix)
     current_procedure_total_value = procedure_total_value_tag.text
 
-    if unitary_value_tag.text == unitary_value:
+    if unitary_value_tag.text == f'{float(unitary_value):.2f}':
+        # print(unitary_value_tag.text, f'{float(unitary_value):.2f}')
         executed_quantity = procedure_data.find('ans:quantidadeExecutada', ans_prefix).text
         unitary_value_tag.text = f'{float(new_unitary_value):.2f}'
         procedure_total_value_tag.text = f'{float(unitary_value_tag.text) * float(executed_quantity):.2f}'
 
         if current_procedure_total_value > procedure_total_value_tag.text:
-            value_difference = f'{float(current_procedure_total_value) - float(procedure_total_value_tag.text):.2f}'
+            # print(f' valor unit new: {new_unitary_value} novo: {procedure_total_value_tag.text} Velho:{current_procedure_total_value} qntd: {executed_quantity}')
+            value_difference = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
+            current_procedure_total_value = f'{float(current_procedure_total_value) - float(procedure_total_value_tag.text):.2f}'
 
         else:
             value_difference = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
+            current_procedure_total_value = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
 
-        altered_data = 'valor unitário'
-        generateAlterationLog(altered_data, unitary_value, new_unitary_value)
+    altered_data = 'valor unitário'
+    generateAlterationLog(altered_data, unitary_value, new_unitary_value)
 
     def recalculateAllTotalValues(valueDifference):
         account_total_values_tag = acnt.find('ans:valorTotal', ans_prefix)

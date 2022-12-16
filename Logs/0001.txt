@@ -1,5 +1,2 @@
 ---------------------------- LOG DE ALTERAÇÕES ----------------------------
-Account:22222222 Procedure:99999917 unitary value:24.91 altered for:10
-Account:22222222 Procedure:60023406 unitary value:124.24 altered for:100
 Número da conta:22222222 Procedimento:99999917 valor unitário:24.91 alterado para:10
-Número da conta:22222222 Procedimento:60023406 valor unitário:124.24 alterado para:100
