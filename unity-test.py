@@ -32,10 +32,10 @@ def isExists(obj):
 
 def getAllAccountProcedures(conta):
     account = conta # conta.find(f'ans:cabecalhoGuia[ans:numeroGuiaPrestador="{account_number}"]..', ans_prefix)
-    # if account is not None:
-    account_executed_procedures = account.find('ans:procedimentosExecutados', ans_prefix)
-    account_expenses = account.find('ans:outrasDespesas', ans_prefix)
-    all_account_procedures = account_executed_procedures, account_expenses
+    if account is not None:
+        account_executed_procedures = account.find('ans:procedimentosExecutados', ans_prefix)
+        account_expenses = account.find('ans:outrasDespesas', ans_prefix)
+        all_account_procedures = account_executed_procedures, account_expenses
 
     return all_account_procedures
     # else:
@@ -45,30 +45,35 @@ def getAllAccountProcedures(conta):
     #     return all_account_procedures
 
 
-def getSpecifiedProcedureData(account):
+def getSpecifiedDataInExecutedProcedures(account):
     if isExists(account):
         for data in account:
             # SEARCH IN ALL EXECUTED PROCEDURES FOR SPECIFIED EXECUTED PROCEDURE CODE:
             executed_procedure = data.find(f'ans:procedimentoExecutado[ans:codigoProcedimento="{procedure_code}"]..',
                                         ans_prefix)
 
-            # SEARCH IN ALL EXPENSES OF ACCOUNT FOR SPECIFIED EXPENSE PROCEDURE CODE:
-            expense_procedure = data.find(f'ans:servicosExecutados[ans:codigoProcedimento="{procedure_code}"]..',
-                                          ans_prefix)
-
-            founded_procedures_data = {'Executed procedure': None, 'Expense procedure': None}
-
             if isExists(executed_procedure):
                 global executed_procedure_data
                 executed_procedure_data = executed_procedure.find('ans:procedimentoExecutado', ans_prefix)
-                founded_procedures_data['Executed procedure'] = executed_procedure_data
+                return executed_procedure_data
+
+    else:
+        return None
+
+
+def getSpecifiedDataInExpenses(account):
+    if isExists(account):
+        for data in account:
+            # SEARCH IN ALL EXPENSES OF ACCOUNT FOR SPECIFIED EXPENSE PROCEDURE CODE:
+            # print(procedure_code)
+            expense_procedure = data.find(f'ans:servicosExecutados[ans:codigoProcedimento="{procedure_code}"]..',
+                                          ans_prefix)
 
             if isExists(expense_procedure):
                 global expense_procedure_data
                 expense_procedure_data = expense_procedure.find('ans:servicosExecutados', ans_prefix)
-                founded_procedures_data['Expense procedure'] = expense_procedure_data
 
-            return founded_procedures_data['Executed procedure'], founded_procedures_data['Expense procedure']
+                return expense_procedure_data
     else:
         return None
 
@@ -107,23 +112,29 @@ def alterUnityMeasure():
 
 
 def alterValue():
-    unitary_value_tag = expense_procedure_data.find('ans:valorUnitario', ans_prefix)
-    procedure_total_value_tag = expense_procedure_data.find('ans:valorTotal', ans_prefix)
+    global value_difference
+    unitary_value_tag = procedure_data.find('ans:valorUnitario', ans_prefix)
+    procedure_total_value_tag = procedure_data.find('ans:valorTotal', ans_prefix)
     current_procedure_total_value = procedure_total_value_tag.text
 
-    if unitary_value_tag.text == unitary_value:
-        executed_quantity = expense_procedure_data.find('ans:quantidadeExecutada', ans_prefix).text
+    if unitary_value_tag.text == f'{float(unitary_value):.2f}':
+        # print(unitary_value_tag.text, f'{float(unitary_value):.2f}')
+        executed_quantity = procedure_data.find('ans:quantidadeExecutada', ans_prefix).text
         unitary_value_tag.text = f'{float(new_unitary_value):.2f}'
         procedure_total_value_tag.text = f'{float(unitary_value_tag.text) * float(executed_quantity):.2f}'
 
         if current_procedure_total_value > procedure_total_value_tag.text:
-            value_difference = f'{float(current_procedure_total_value) - float(procedure_total_value_tag.text):.2f}'
+            # print(f' valor unit new: {new_unitary_value} novo: {procedure_total_value_tag.text} Velho:{current_procedure_total_value} qntd: {executed_quantity}')
+            value_difference = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
+            current_procedure_total_value = f'{float(current_procedure_total_value) - float(procedure_total_value_tag.text):.2f}'
 
         else:
             value_difference = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
+            current_procedure_total_value = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
 
-        altered_data = 'valor unitário'
-        generateAlterationLog(altered_data, unitary_value, new_unitary_value)
+    altered_data = 'valor unitário'
+    generateAlterationLog(altered_data, unitary_value, new_unitary_value)
+
     def recalculateAllTotalValues(valueDifference):
         account_total_values_tag = acnt.find('ans:valorTotal', ans_prefix)
         general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
@@ -286,8 +297,10 @@ def chooseGuide():
     global guide_path, tiss_guide, root_tag
 
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
-    # guide_path = r"C:\Users\eliasp\Downloads\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0 (2).xml"
-    guide_path = r"C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file\tests\0001_d8cade6ca875fb8add14c00b99d6fbdc.xml"
+    # guide_path = r"C:\Users\eliasp\Downloads\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0 (2).xml" # hospitalization
+    # guide_path = r"C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file\tests\0001_d8cade6ca875fb8add14c00b99d6fbdc.xml"
+    guide_path = r"C:\Users\eliasp\Downloads\00000000000000011327_1A051A8DEF70F3E3153A456005D0E74D.xml"
+    # guide_path = fd.askopenfilename(filetypes=file_type)
     if guide_path != '':
         tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
         root_tag = tiss_guide.getroot()
@@ -297,15 +310,19 @@ def chooseGuide():
 
 
 def setGuideType():
-    global guide_data_root_tag, guide_type
-    guide_data_root_tag = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaSP-SADT')
-
-    if guide_data_root_tag is not ET.Element:
-        guide_type = 'HOSPITALIZATION'
-        guide_data_root_tag = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaResumoInternacao')
-
-    else:
+    global guide_type
+    possibles_guide_type = '{' f'{ans_prefix["ans"]}' '}guiaSP-SADT', '{' f'{ans_prefix["ans"]}' '}guiaResumoInternacao'
+    try:
+        guide_data_root_tag = root_tag.iter(possibles_guide_type[0])
+        guide_data_root_tag.__next__()
         guide_type = 'SADT'
+
+    except StopIteration:
+        guide_type = 'HOSPITALIZATION'
+        guide_data_root_tag = root_tag.iter(possibles_guide_type[1])
+
+
+    return guide_data_root_tag
 
 
 def doAlteration():
@@ -331,19 +348,17 @@ def doAlteration():
                         global account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
                         [account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
                          new_unity_measure] = returnReviewLine(reviews_list, 'data')
-                        # print(f'{reviews_list}')
+
                         reviews_list.clear()
                         global accounts
                         accounts = setGuideType()
-                        # print(f'Element found:{accounts}')
+
                         if guide_type == 'SADT':
                             for account in accounts:
-                                # print(account)
                                 if account_number != '':
                                     global account_procedures
                                     account_procedures = getAllAccountProcedures(account)
-                                    procedure_data = getSpecifiedProcedureData(account_procedures)
-                                    # print(f'Account found:{account_number}')
+                                    procedure_data = getSpecifiedDataInExecutedProcedures(account_procedures)
                                     if procedure_data is not None:
                                         alterTableType()
                                         alterUnityMeasure()
@@ -351,32 +366,26 @@ def doAlteration():
                                         control_var += 1
 
                                 else:
-                                    all_procedures_in_guide = account.iterfind('ans:outrasDespesas/', ans_prefix)
-                                    if all_procedures_in_guide is None:
-                                        all_procedures_in_guide = account.iterfind('ans:procedimentosExecutados', ans_prefix)
-                                    # print(f'Element found:{all_procedures_in_guide}')
-                                    procedure_data = getSpecifiedProcedureData(all_procedures_in_guide)
-                                    if procedure_data is not None:
-                                        alterTableType()
-                                        alterUnityMeasure()
-                                        alterProcedureCode()
-                                        control_var += 1
-                        elif guide_type == 'HOSPITALIZATION':
-                            # all_procedures_in_guide = accounts.iterfind('ans:outrasDespesas', ans_prefix)
-                            for i in accounts:
-                                print(i)
-                            # if all_procedures_in_guide is None:
-                            #     all_procedures_in_guide = account.iterfind('ans:procedimentosExecutados', ans_prefix)
-                            # print(f'Element found:{all_procedures_in_guide}')
 
-                            # procedure_data = getSpecifiedProcedureData(all_procedures_in_guide)
-                            # if procedure_data is not None:
-                            #     print(procedure_data)
-                                # alterTableType()
-                                # alterUnityMeasure()
-                                # alterProcedureCode()
-                                # control_var += 1
+                                    guide_data_root_tag = setGuideType()
 
+                                    for guide_data in guide_data_root_tag:
+                                        account_procedures = getAllAccountProcedures(guide_data)
+
+                                        for procedure in account_procedures:
+                                            executed_procedure_data = getSpecifiedDataInExecutedProcedures(procedure)
+                                            expense_procedure_data = getSpecifiedDataInExpenses(procedure)
+
+                                            if executed_procedure_data is not None:
+                                                alterTableType()
+                                                alterProcedureCode()
+                                                control_var += 1
+                                            #
+                                            if expense_procedure_data is not None:
+                                                alterTableType()
+                                                alterProcedureCode()
+                                                alterUnityMeasure()
+                                                control_var += 1
 
     def doValueAlteration():
         global control_var
@@ -407,7 +416,7 @@ def doAlteration():
                             acnt = account
                             if account_number != '':
                                 account_procedures = getAllAccountProcedures(account)
-                                procedure_data = getSpecifiedProcedureData(account_procedures)
+                                procedure_data = getSpecifiedDataInExecutedProcedures(account_procedures)
 
                                 if procedure_data is not None:
                                     alterValue()
@@ -417,7 +426,7 @@ def doAlteration():
                                 if all_procedures_in_guide is None:
                                     all_procedures_in_guide = account.iterfind('ans:guiaResumoInternacao', ans_prefix)
 
-                                procedure_data = getSpecifiedProcedureData(all_procedures_in_guide)
+                                procedure_data = getSpecifiedDataInExecutedProcedures(all_procedures_in_guide)
                                 if procedure_data is not None:
                                     alterValue()
                                     control_var += 1
@@ -474,34 +483,69 @@ def generateHashAndSave():
 
 ########################################################################################################################
 
+# global account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
+# account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure = \
+#     '', '60015179', '', '18', '20', '', ''
+# account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure = \
+#     '', '99999917', '', '18', '20', '', ''
+
 chooseGuide()
+guide_data_root_tag = setGuideType()
+
+global control_var
 control_var = 0
 
-global account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
-account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure  = \
-    '', '60015179', '', '18', '20', '', ''
+table_reviews = PD.read_excel("sources/Teste.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
 
-setGuideType()
+line_count = len(table_reviews.index)
+columns_count = len(table_reviews.columns)
 
-print(guide_data_root_tag)
-for guide_data in guide_data_root_tag:
-    account_procedures = getAllAccountProcedures(guide_data)
-    print(guide_data)
+reviews_list = []
+for i in range(0, line_count):
+    for j in range(0, columns_count):
+        # INSERT LINE OF CRITICAL IN A LIST
+        reviews_list.append(table_reviews.iloc[i][j])
+        if len(reviews_list) == 7:  # WHEN LINE IS COMPLETE
+            global account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
+            [account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
+             new_unity_measure] = returnReviewLine(reviews_list, 'data')
 
-    for proceed in account_procedures:
-        try:
-            executed_procedure_data, expense_procedure_data = getSpecifiedProcedureData(proceed)
-        except TypeError:
-            pass
-        if executed_procedure_data is not None:
-            alterTableType()
-            alterProcedureCode()
-            control_var += 1
+            # print(account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
+            #  new_unity_measure)
+            # print(returnReviewLine(reviews_list, 'data'))
+            reviews_list.clear()
 
-        if expense_procedure_data is not None:
-            alterTableType()
-            alterProcedureCode()
-            alterUnityMeasure()
-            control_var += 1
+            if guide_type == 'SADT':
+                if account_number != '':
+                    pass
 
-print(control_var)
+            if guide_type == 'HOSPITALIZATION':
+                for guide_data in guide_data_root_tag:
+                    account_procedures = getAllAccountProcedures(guide_data)
+                    # print(account_procedures)
+                    for procedure in account_procedures:
+                        for i in procedure:
+                            print(getSpecifiedDataInExpenses(procedure))
+
+                        if procedure == '{http://www.ans.gov.br/padroes/tiss/schemas}servicosExecutados':
+
+                            print(procedure.iterfind('ans:outrasDespesas/', ans_prefix))
+
+                            if executed_procedure_data is not None:
+                                alterTableType()
+                                alterProcedureCode()
+                                control_var += 1
+                        #
+                        # if procedure == '{http://www.ans.gov.br/padroes/tiss/schemas}procedimentosExecutados':
+                        #     expense_procedure_data = getSpecifiedDataInExpenses(procedure)
+                        #     if expense_procedure_data is not None:
+                        #         print('opa')
+                        #         alterTableType()
+                        #         alterProcedureCode()
+                        #         alterUnityMeasure()
+                        #         control_var += 1
+
+
+
+if control_var > 0:
+    print(control_var)
