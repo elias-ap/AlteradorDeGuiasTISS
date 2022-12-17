@@ -41,8 +41,9 @@ def searchAccountProcedures(conta):
 
 def searchProcedureDataInProcedure(account):
     if isExists(account):
+        print(account)
         for procedures in account:
-            print(procedures)
+            # print(procedures)
             # SEARCH FOR PROCEDURE CODE SPECIFIED IN ALL PROCEDURES OF ACCOUNT:
             procedure = procedures.find(f'ans:servicosExecutados[ans:codigoProcedimento="{procedure_code}"]..',
                                         ans_prefix)
@@ -322,20 +323,20 @@ def doAlteration():
                         global account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
                         [account_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
                          new_unity_measure] = returnReviewLine(reviews_list, 'data')
-                        print(account_number, procedure_code, new_procedure_code, table_type, new_table_type,unity_measure,new_unity_measure)
+
                         reviews_list.clear()
                         global accounts
 
-                        accounts = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaResumoInternacao')
-                        # accounts = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaSP-SADT')
+                        # accounts = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaResumoInternacao')
+                        accounts = root_tag.iter('{http://www.ans.gov.br/padroes/tiss/schemas}guiaSP-SADT')
 
                         for account in accounts:
-                            # print(account)
+                            print(account)
                             if account_number != '':
                                 global account_procedures
                                 account_procedures = searchAccountProcedures(account)
                                 procedure_data = searchProcedureDataInProcedure(account_procedures)
-                                # print(f'Account found:{account_number}')
+                                # print(f'Account found:{guide_number}')
                                 if procedure_data is not None:
                                     alterTableType()
                                     alterUnityMeasure()
@@ -344,10 +345,9 @@ def doAlteration():
 
                             else:
                                 all_procedures_in_guide = account.iterfind('ans:outrasDespesas/', ans_prefix)
-
                                 if all_procedures_in_guide is None:
                                     all_procedures_in_guide = account.iterfind('ans:procedimentosExecutados', ans_prefix)
-                                # print(f'Element found:{all_procedures_in_guide}')
+
                                 procedure_data = searchProcedureDataInProcedure(all_procedures_in_guide)
                                 if procedure_data is not None:
                                     alterTableType()
@@ -356,10 +356,10 @@ def doAlteration():
                                     control_var += 1
 
                             # all_procedures_in_guide = accounts.iterfind('ans:outrasDespesas', ans_prefix)
-                            for i in accounts:
-                                print(i)
+                            # for i in accounts:
+                            #     print(i)
                             # if all_procedures_in_guide is None:
-                            #     all_procedures_in_guide = account.iterfind('ans:procedimentosExecutados', ans_prefix)
+                            #     all_procedures_in_guide = guide.iterfind('ans:procedimentosExecutados', ans_prefix)
                             # print(f'Element found:{all_procedures_in_guide}')
 
                             # procedure_data = getSpecifiedDataInExecutedProcedures(all_procedures_in_guide)
@@ -405,8 +405,8 @@ def doAlteration():
                                     control_var += 1
                             else:
                                 all_procedures_in_guide = account.iterfind('ans:outrasDespesas/', ans_prefix)
-
                                 procedure_data = searchProcedureDataInProcedure(all_procedures_in_guide)
+
                                 if procedure_data is not None:
                                     alterValue()
                                     control_var += 1
