@@ -9,7 +9,7 @@
     </ns0:identificacaoTransacao>
     <ns0:origem>
       <ns0:identificacaoPrestador>
-        <ns0:codigoPrestadorNaOperadora>21034605</ns0:codigoPrestadorNaOperadora>
+        <ns0:codigoPrestadorNaOperadora>05151651</ns0:codigoPrestadorNaOperadora>
       </ns0:identificacaoPrestador>
     </ns0:origem>
     <ns0:destino>
@@ -231,7 +231,7 @@
               </ns0:servicosExecutados>
             </ns0:despesa>
           </ns0:outrasDespesas>
-          <ns0:observacao>Esta Guia destina-se exclusivamente a documentar a cobranÃ§a de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ns0:observacao>
+          <ns0:observacao>Esta Guia destina-se exclusivamente a documentar a cobrança de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ns0:observacao>
           <ns0:valorTotal>
             <ns0:valorTaxasAlugueis>147.82</ns0:valorTaxasAlugueis>
             <ns0:valorMateriais>391.55</ns0:valorMateriais>
@@ -451,7 +451,7 @@
               </ns0:servicosExecutados>
             </ns0:despesa>
           </ns0:outrasDespesas>
-          <ns0:observacao>Esta Guia destina-se exclusivamente a documentar a cobranÃ§a de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ns0:observacao>
+          <ns0:observacao>Esta Guia destina-se exclusivamente a documentar a cobrança de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ns0:observacao>
           <ns0:valorTotal>
             <ns0:valorTaxasAlugueis>160.77</ns0:valorTaxasAlugueis>
             <ns0:valorMateriais>23.00</ns0:valorMateriais>
@@ -463,6 +463,6 @@
     </ns0:loteGuias>
   </ns0:prestadorParaOperadora>
   <ns0:epilogo>
-    <ns0:hash>b64193f7e15554bdb3fb34764e6cc910</ns0:hash>
+    <ns0:hash>48ad68e7b14e3bc81a9f18ff6c498333</ns0:hash>
   </ns0:epilogo>
 </ns0:mensagemTISS>

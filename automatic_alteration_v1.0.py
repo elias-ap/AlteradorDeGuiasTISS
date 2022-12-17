@@ -359,7 +359,7 @@ def doAlteration():
                             # for i in accounts:
                             #     print(i)
                             # if all_procedures_in_guide is None:
-                            #     all_procedures_in_guide = guide.iterfind('ans:procedimentosExecutados', ans_prefix)
+                            #     all_procedures_in_guide = account.iterfind('ans:procedimentosExecutados', ans_prefix)
                             # print(f'Element found:{all_procedures_in_guide}')
 
                             # procedure_data = getSpecifiedDataInExecutedProcedures(all_procedures_in_guide)

@@ -1,4 +1,3 @@
-# This Python file uses the following encoding: utf-8
 # IMPORTS
 import xml.etree.ElementTree as ET
 import os
@@ -8,18 +7,14 @@ import customtkinter as cTk
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
 
+# SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
 global ans_prefix
-ans_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}  # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
+ans_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}
 
 
-def returnReviewLine(list, mode):
-    # IF DEFINED FOR DOING DATA ALTERATIONS:
-    if mode == 'data':
-        return list[0], list[1], list[2], list[3], list[4], list[5], list[6]
-
-    # IF DEFINED FOR DOING VALUE ALTERATIONS:
-    if mode == 'values':
-        return list[0], list[1], list[2].replace(',', '.'), list[3].replace(',', '.')
+def openPlan():
+    path = os.path.abspath('sources/Teste.xlsx')
+    os.startfile(f"{path}")
 
 
 def isExists(obj):
@@ -30,85 +25,34 @@ def isExists(obj):
         return False
 
 
-def getAllAccountProcedures(account):
-    if guide_type == 'SADT' and guide_number != '':
-        account = account.find(f'ans:cabecalhoGuia[ans:numeroGuiaPrestador="{guide_number}"]..', ans_prefix)
-        if isExists(account):
-            account_procedures_dict = {'Executed procedures': None, 'Expenses procedures': None}
-            account_executed_procedures = account.find('ans:procedimentosExecutados', ans_prefix)
-            account_expense_procedures = account.find('ans:outrasDespesas', ans_prefix)
-            if isExists(account_executed_procedures):
-                account_procedures_dict['Executed procedures'] = (account_executed_procedures)
+def generateAlterationLog(altered_data, old, new):
+    if "alteration_log_list" not in globals():
+        global alteration_log_list
+        alteration_log_list = []
 
-            if isExists(account_expense_procedures):
-                account_procedures_dict['Expenses procedures'] = (account_expense_procedures)
+    if guide_number != '':
+        log_line = f'Número da conta:{guide_number} Procedimento:{procedure_code} {altered_data}:{old} alterado para:{new}'
+        alteration_log_list.append(log_line)
 
-            return account_procedures_dict
-
-    elif guide_type == 'SADT':
-            account_procedures_dict = {'Executed procedures': None, 'Expenses procedures': None}
-            account_executed_procedures = account.find('ans:procedimentosExecutados', ans_prefix)
-            account_expense_procedures = account.find('ans:outrasDespesas', ans_prefix)
-            if isExists(account_executed_procedures):
-                account_procedures_dict['Executed procedures'] = (account_executed_procedures)
-
-            if isExists(account_expense_procedures):
-                account_procedures_dict['Expenses procedures'] = (account_expense_procedures)
-
-            return account_procedures_dict
-
-    elif guide_type == 'HOSPITALIZATION':
-        account_procedures_dict = {'Executed procedures': None, 'Expenses procedures': None}
-        account_executed_procedures = account.find('ans:procedimentosExecutados', ans_prefix)
-        account_expense_procedures = account.find('ans:outrasDespesas', ans_prefix)
-        if isExists(account_executed_procedures):
-            account_procedures_dict['Executed procedures'] = (account_executed_procedures)
-
-        if isExists(account_expense_procedures):
-            account_procedures_dict['Expenses procedures'] = (account_expense_procedures)
-
-        return account_procedures_dict
+    else:
+        log_line = f'Procedimento:{procedure_code} {altered_data}:{old} alterado para:{new}'
+        alteration_log_list.append(log_line)
 
 
-def searchForSpecifiedProcedure(account_executed_procedures, account_expenses_procedures):
-        if account_executed_procedures is not None:
-            for data in account_executed_procedures:
-                # SEARCH IN ALL EXPENSES OF ACCOUNT FOR SPECIFIED EXPENSE PROCEDURE CODE:
-                executed_procedure = data.find(f'ans:procedimentoExecutado[ans:codigoProcedimento="{procedure_code}"]..',
-                                               ans_prefix)
-
-                if isExists(executed_procedure):
-                    print(executed_procedure)
-                    executed_procedure_data = executed_procedure.find('ans:procedimentoExecutado', ans_prefix)
-
-                    return executed_procedure_data
-
-        if account_expenses_procedures is not None:
-            for data in account_expenses_procedures:
-                expense_procedure = data.find(f'ans:servicosExecutados[ans:codigoProcedimento="{procedure_code}"]..',
-                                              ans_prefix)
-
-                if isExists(expense_procedure):
-                    expense_procedure_data = expense_procedure.find('ans:servicosExecutados', ans_prefix)
-                    return expense_procedure_data
-            else:
-                mb.showwarning(message=f'Procedimento: {procedure_code} não foi encontrado na guia escolhida')
-
-
-def alterTableType():
+def alterTableType(specified_procedure_data):
     altered_data = 'tipo de tabela'
     tag_table_type = specified_procedure_data.find('ans:codigoTabela', ans_prefix)
     if new_table_type != '' and new_table_type != tag_table_type.text:
-        if new_table_type == 0:
+        if new_table_type == '0':
             tag_table_type.text.replace(str(table_type), str(new_table_type)).replace('0', '00')
-            # generateAlterationLog(altered_data, table_type, new_table_type)
+            generateAlterationLog(altered_data, table_type, new_table_type)
 
         else:
             tag_table_type.text = str(new_table_type)
-            # generateAlterationLog(altered_data, table_type, new_table_type)
+            generateAlterationLog(altered_data, table_type, new_table_type)
 
 
-def alterProcedureCode():
+def alterProcedureCode(specified_procedure_data):
     tag_procedure_code = specified_procedure_data.find('ans:codigoProcedimento', ans_prefix)
 
     if new_procedure_code != '' and new_procedure_code != tag_procedure_code.text:
@@ -117,7 +61,7 @@ def alterProcedureCode():
         generateAlterationLog(altered_data, procedure_code, new_procedure_code)
 
 
-def alterUnityMeasure():
+def alterUnityMeasure(specified_procedure_data):
     tag_unity_measure = specified_procedure_data.find('ans:unidadeMedida', ans_prefix)
 
     if new_unity_measure != '' and new_unity_measure != tag_unity_measure.text:
@@ -128,111 +72,384 @@ def alterUnityMeasure():
         generateAlterationLog(altered_data, unity_measure, new_unity_measure)
 
 
-def alterValue():
-    global value_difference
-    unitary_value_tag = specified_procedure_data.find('ans:valorUnitario', ans_prefix)
-    procedure_total_value_tag = specified_procedure_data.find('ans:valorTotal', ans_prefix)
-    current_procedure_total_value = procedure_total_value_tag.text
+def recalculateAllTotalValues(difference):
+    # GET ACCOUNT TOTAL VALUES TAGS
+    account_total_values_tag = account.find('ans:valorTotal', ans_prefix)
+    general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
 
+    for total_value in account_total_values_tag:
+        # IF TOTAL VALUE LARGER THAN DIFFERENCE VALUE ALTER
+        if total_value.text > difference:
+            total_value.text = f'{float(total_value.text) - float(difference):.2f}'
+            general_total_values_tag.text = f'{float(general_total_values_tag.text) - float(difference):.2f}'
+            break
+
+
+def alterValues(specified_procedure_data):
+    # GET PROCEDURE VALUE
+    unitary_value_tag = specified_procedure_data.find('ans:valorUnitario', ans_prefix)
+
+    # IF PROCEDURE VALUE IS THE SAME AS READED
     if unitary_value_tag.text == f'{float(unitary_value):.2f}':
         executed_quantity = specified_procedure_data.find('ans:quantidadeExecutada', ans_prefix).text
+        procedure_total_value_tag = specified_procedure_data.find('ans:valorTotal', ans_prefix)
+
+        # STORAGE THE OLD PROCEDURE TOTAL VALUE
+        old_procedure_total_value = procedure_total_value_tag.text
+
+        # ALTER THE PROCEDURE UNITARY VALUE
         unitary_value_tag.text = f'{float(new_unitary_value):.2f}'
-        procedure_total_value_tag.text = f'{float(unitary_value_tag.text) * float(executed_quantity):.2f}'
 
-        if current_procedure_total_value > procedure_total_value_tag.text:
-            value_difference = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
-            current_procedure_total_value = f'{float(current_procedure_total_value) - float(procedure_total_value_tag.text):.2f}'
+        # CALCULATE THE NEW TOTAL VALUE OF PROCEDURE AND ALTER
+        new_procedure_total_value = f'{float(unitary_value_tag.text) * float(executed_quantity):.2f}'
+        procedure_total_value_tag.text = new_procedure_total_value
 
+        # IF OLD VALUE LARGER THAN NEW VALUE
+        if f'{float(old_procedure_total_value):.2f}' > f'{new_procedure_total_value:.2f}':
+            value_difference = f'{float(old_procedure_total_value) - float(procedure_total_value_tag.text):.2f}'
         else:
-            value_difference = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
-            current_procedure_total_value = f'{float(procedure_total_value_tag.text) - float(current_procedure_total_value):.2f}'
+            value_difference = f'{float(new_procedure_total_value) - float(old_procedure_total_value):.2f}'
 
     altered_data = 'valor unitário'
     generateAlterationLog(altered_data, unitary_value, new_unitary_value)
-
-    def recalculateAllTotalValues(valueDifference):
-        account_total_values_tag = guide.find('ans:valorTotal', ans_prefix)
-        general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
-        wasRecalculated = False
-
-        for total_value in account_total_values_tag:
-            if wasRecalculated == False:
-                if total_value.text > valueDifference:
-                    total_value.text = f'{float(total_value.text) + float(valueDifference):.2f}'
-                    general_total_values_tag.text = f'{float(general_total_values_tag.text) + float(valueDifference):.2f}'
-                    wasRecalculated = True
-
     recalculateAllTotalValues(value_difference)
 
 
-def generateAlterationLog(altered_data, old_value, new_value):
-    if "alteration_log_list" not in globals():
-        global alteration_log_list
-        alteration_log_list = []
+def removeHashTextFromGuide(guide_root_tag):
+    guide_root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = ''
+    return guide_root_tag
 
-    old = old_value
-    new = new_value
-    if guide_number != '':
-        alteration_log_list.append(f'Número da conta:{guide_number} Procedimento:{procedure_code} {altered_data}:{old} alterado para:{new}')
+
+def generateNewHashCode(all_tags):
+    tags_texts = []
+    unique_line_string = ''
+
+    # FOR EVERY TAG REMOVE LINE BREAKS
+    for tag in all_tags:
+        tags_texts.append(tag.text.replace("\n", ''))
+
+    # FOR EVERY TEXT ADD TO UNIQUE LINE
+    for text in tags_texts:
+        unique_line_string += text
+
+    # CREATE NEW HASH CODE
+    h = hashlib.md5(unique_line_string.encode('iso-8859-1'))
+    new_code = h.hexdigest()
+    return new_code
+
+
+def createLogFile(path):
+    # GET ABSOLUTE PATH OF LOGS FOLDER
+    log_folder_path = os.path.abspath(r'Logs')
+    log_name = path.split("_")[0]
+    log_name = log_name.rsplit('/', 1)[1]
+
+    # IF HAVE A LOG OF SAME GUIDE OPEN LOG LIKE APPEND MODE ELSE CREATE NEW TXT FILE AS LOG
+    if os.path.isfile(f'{log_folder_path}/{log_name}.txt'):
+        log_file = open(f'{log_folder_path}/{log_name}.txt', 'a')
 
     else:
-        alteration_log_list.append(f'Procedimento:{procedure_code} {altered_data}:{old} alterado para:{new}')
+        log_file = open(f'{log_folder_path}/{log_name}.txt', 'x')
+        log_file.write('---------------------------- LOG DE ALTERAÇÕES ----------------------------\n')
+
+    # BEFORE WRITE CHECK IN LOG IF IT HAS REPEATED LINES IN ALTERATION LOG LIST, IF YES REMOVE THEM FROM LIST
+    log_file_readable = open(f'{log_folder_path}/{log_name}.txt', 'r')
+    for line in log_file_readable.readlines():
+        if line.replace("\n", '') in alteration_log_list:
+            alteration_log_list.remove(line.replace("\n", ''))
+
+    for alteration in alteration_log_list:
+        log_file.write(alteration + '\n')
+
+    log_file.close()
 
 
-def saveGuide():
-    def removeHashTextFromGuide(root_tag):
-        root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = ''
-        return root_tag
+def saveGuideAfterAlterations():
+    root_tag_without_hash_text = removeHashTextFromGuide(root_tag)
+    all_guide_tags = root_tag_without_hash_text.iter()
 
-    def generateNewHashCode(all_tags):
-        tags_texts = []
-        unique_line_string = ''
-        for tag in all_tags:
-            tags_texts.append(tag.text.replace("\n", ''))
-
-        for i in tags_texts:
-            unique_line_string += i
-
-        h = hashlib.md5(unique_line_string.encode('iso-8859-1'))
-        new_hash_code = h.hexdigest()
-        return new_hash_code
-
-    def createLogFile(guide_path):
-        log_folder_path = os.path.abspath(r'Logs')
-        log_name = guide_path.split("_")[0]
-        log_name = log_name.rsplit('/', 1)[1]
-        if os.path.isfile(f'{log_folder_path}/{log_name}.txt'):
-            log_file = open(f'{log_folder_path}/{log_name}.txt', 'a')
-        else:
-            log_file = open(f'{log_folder_path}/{log_name}.txt', 'x')
-            log_file.write('---------------------------- LOG DE ALTERAÇÕES ----------------------------\n')
-
-        log_file_readable = open(f'{log_folder_path}/{log_name}.txt', 'r')
-
-        for line in log_file_readable.readlines():
-            if line.replace("\n", '') in alteration_log_list:
-                alteration_log_list.remove(line.replace("\n",''))
-
-        for alteration in alteration_log_list:
-            log_file.write(alteration + '\n')
-
-        log_file.close()
-
-    root_tag = removeHashTextFromGuide(tiss_guide.getroot())
-    all_tags = root_tag.iter()
-    new_hash_code = generateNewHashCode(all_tags)
+    new_hash_code = generateNewHashCode(all_guide_tags)
     root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
-    if type(guide_path) == str:
-        tiss_guide.write(guide_path.split('_')[0] + f'_{new_hash_code}.xml', encoding="ISO-8859-1")
-        createLogFile(guide_path)
-        mb.showinfo(message='Arquivo salvo!')
-        cancelAlteration()
+
+    # SAVE ALTERED GUIDE
+    tiss_guide.write(guide_path.split('_')[0] + f'_{new_hash_code}.xml', encoding="ISO-8859-1")
+    createLogFile(guide_path)
+    mb.showinfo(message='Arquivo salvo!')
+    cancelAlteration()
+
+
+def chooseGuide():
+    global guide_path, tiss_guide, root_tag
+    file_type = (('XML files', '*.xml'), ('All files', '*.*'))
+    guide_path = fd.askopenfilename(filetypes=file_type)
+    if guide_path != '':
+        tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
+        root_tag = tiss_guide.getroot()
+        waitingAlterationConfig()
+
     else:
-        tiss_guide.write(guide.split('_')[0].__add__(f'_{new_hash_code}.xml'), encoding="ISO-8859-1")
+        mb.showwarning(title='Erro', message='A guia não foi escolhida!')
 
 
+def getGuideType():
+    global guide_type
+    possibles_guide_type = '{' f'{ans_prefix["ans"]}' '}guiaSP-SADT', '{' f'{ans_prefix["ans"]}' '}guiaResumoInternacao'
 
-def createDefaultButtons():
+    accounts = root_tag.iter(possibles_guide_type[0])
+    if len(list(accounts)) > 0:
+        accounts = root_tag.iter(possibles_guide_type[0])
+        guide_type = 'SADT'
+        return accounts
+
+    else:
+        accounts = root_tag.iter(possibles_guide_type[1])
+        guide_type = 'HOSPITALIZATION'
+        return accounts
+
+
+def returnReviewLine(review_list, mode):
+    # IF DEFINED FOR DOING DATA ALTERATIONS:
+    if mode == 'data':
+        return review_list[0], review_list[1], review_list[2], review_list[3], review_list[4], review_list[5], \
+               review_list[6]
+
+    # IF DEFINED FOR DOING VALUE ALTERATIONS:
+    if mode == 'values':
+        return review_list[0], review_list[1], review_list[2].replace(',', '.'), review_list[3].replace(',', '.')
+
+
+def getAllAccountProcedures(guide_account):
+    if guide_type == 'SADT' and guide_number != '':
+        guide_account = guide_account.find(f'ans:cabecalhoGuia[ans:numeroGuiaPrestador="{guide_number}"]..', ans_prefix)
+        if isExists(guide_account):
+            account_procedures_dict = {'Executed procedures': None, 'Expenses procedures': None}
+            account_executed_procedures = guide_account.find('ans:procedimentosExecutados', ans_prefix)
+            account_expense_procedures = guide_account.find('ans:outrasDespesas', ans_prefix)
+
+            if isExists(account_executed_procedures):
+                account_procedures_dict['Executed procedures'] = (account_executed_procedures)
+
+            if isExists(account_expense_procedures):
+                account_procedures_dict['Expenses procedures'] = (account_expense_procedures)
+
+            return account_procedures_dict
+
+    elif guide_type == 'SADT':
+        account_procedures_dict = {'Executed procedures': None, 'Expenses procedures': None}
+        account_executed_procedures = guide_account.find('ans:procedimentosExecutados', ans_prefix)
+        account_expense_procedures = guide_account.find('ans:outrasDespesas', ans_prefix)
+        if isExists(account_executed_procedures):
+            account_procedures_dict['Executed procedures'] = (account_executed_procedures)
+
+        if isExists(account_expense_procedures):
+            account_procedures_dict['Expenses procedures'] = (account_expense_procedures)
+
+        return account_procedures_dict
+
+    elif guide_type == 'HOSPITALIZATION':
+        account_procedures_dict = {'Executed procedures': None, 'Expenses procedures': None}
+        account_executed_procedures = guide_account.find('ans:procedimentosExecutados', ans_prefix)
+        account_expense_procedures = guide_account.find('ans:outrasDespesas', ans_prefix)
+        if isExists(account_executed_procedures):
+            account_procedures_dict['Executed procedures'] = (account_executed_procedures)
+
+        if isExists(account_expense_procedures):
+            account_procedures_dict['Expenses procedures'] = (account_expense_procedures)
+
+        return account_procedures_dict
+
+
+def searchForSpecifiedProcedure(account_executed_procedures, account_expenses_procedures):
+    # IF ACCOUNT HAVE EXECUTED PROCEDURES TAG (procedimentosExecutados)
+    if isExists(account_executed_procedures):
+        for data in account_executed_procedures:
+            # SEARCH IN ACCOUNT EXECUTED PROCEDURES TAG FOR SPECIFIED PROCEDURE CODE
+            executed_procedure = data.find(f'ans:procedimentoExecutado[ans:codigoProcedimento="{procedure_code}"]..',
+                                           ans_prefix)
+
+            # IF ACCOUNT HAVE THE SPECIFIED PROCEDURE GET HIS DATA
+            if isExists(executed_procedure):
+                executed_procedure_data = executed_procedure.find('ans:procedimentoExecutado', ans_prefix)
+
+                return executed_procedure_data
+
+    # IF ACCOUNT HAVE EXPENSES PROCEDURES TAG (outrasDespesas)
+    if isExists(account_expenses_procedures):
+        for data in account_expenses_procedures:
+            # SEARCH IN ACCOUNT EXPENSE PROCEDURES TAG FOR SPECIFIED PROCEDURE CODE
+            expense_procedure = data.find(f'ans:servicosExecutados[ans:codigoProcedimento="{procedure_code}"]..',
+                                          ans_prefix)
+
+            # IF ACCOUNT HAVE THE SPECIFIED PROCEDURE GET HIS DATA
+            if isExists(expense_procedure):
+                expense_procedure_data = expense_procedure.find('ans:servicosExecutados', ans_prefix)
+                return expense_procedure_data
+        else:
+            mb.showwarning(message=f'Procedimento: {procedure_code} não foi encontrado na guia escolhida')
+
+
+def getSpecifiedProcedureData():
+    procedures_executed_and_expenses = getAllAccountProcedures(account)
+
+    specified_procedure_data = searchForSpecifiedProcedure(
+        procedures_executed_and_expenses['Executed procedures'],
+        procedures_executed_and_expenses['Expenses procedures'])
+
+    return specified_procedure_data
+
+
+def doDataAlteration(guide_accounts):
+    global control_var
+    # READ PLAN OF DATA ALTERATION IN EXCEL
+    table_reviews = PD.read_excel("sources/Teste.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
+
+    for review in table_reviews.values:
+        global guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
+        [guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
+         new_unity_measure] = returnReviewLine(review, 'data')
+
+        if guide_type == 'SADT':
+            global account
+            for account in guide_accounts:
+                if guide_number != '':
+                    specified_procedure_data = getSpecifiedProcedureData()
+
+                    if specified_procedure_data is not None:
+                        alterTableType(specified_procedure_data)
+                        alterUnityMeasure(specified_procedure_data)
+                        alterProcedureCode(specified_procedure_data)
+                        control_var += 1
+                        break
+                else:
+                    specified_procedure_data = getSpecifiedProcedureData()
+
+                    if specified_procedure_data is not None:
+                        alterTableType(specified_procedure_data)
+                        alterUnityMeasure(specified_procedure_data)
+                        alterProcedureCode(specified_procedure_data)
+                        control_var += 1
+
+        if guide_type == 'HOSPITALIZATION':
+            for account in guide_accounts:
+                specified_procedure_data = getSpecifiedProcedureData()
+
+                if specified_procedure_data is not None:
+                    alterTableType(specified_procedure_data)
+                    alterUnityMeasure(specified_procedure_data)
+                    alterProcedureCode(specified_procedure_data)
+                    control_var += 1
+
+
+def doValueAlteration(guide_accounts):
+    global control_var
+    # READ PLAN OF VALUES ALTERATIONS IN EXCEL
+    table_reviews = PD.read_excel("sources/Teste.xlsx", sheet_name='2', dtype=str,
+                                  keep_default_na=False)
+
+    for i in table_reviews.values:
+        global guide_number, procedure_code, unitary_value, new_unitary_value
+        [guide_number, procedure_code, unitary_value, new_unitary_value] = returnReviewLine(
+            i, 'values')
+
+        if guide_type == 'SADT':
+            global account
+            for account in guide_accounts:
+                if guide_number != '':
+                    specified_procedure_data = getSpecifiedProcedureData()
+
+                    if specified_procedure_data is not None:
+                        alterValues()
+                        control_var += 1
+                        break
+                else:
+                    specified_procedure_data = getSpecifiedProcedureData()
+
+                    if specified_procedure_data is not None:
+                        alterValues()
+                        control_var += 1
+
+        elif guide_type == 'HOSPITALIZATION':
+            for account in guide_accounts:
+                specified_procedure_data = getSpecifiedProcedureData()
+
+                if specified_procedure_data is not None:
+                    alterValues(specified_procedure_data)
+                    control_var += 1
+
+
+def doAlterationAction():
+    global control_var
+    data_alteration_check = data_alteration_check_button.get()
+    value_alteration_check = value_alteration_check_button.get()
+    control_var = 0
+    guide_accounts = getGuideType()
+    # try:
+    if data_alteration_check == 1:
+        e = 1
+        doDataAlteration(guide_accounts)
+
+    if value_alteration_check == 1:
+        e = 2
+        doValueAlteration(guide_accounts)
+    # except Exception:
+    #     if e == 1:
+    #         mb.showerror('Erro', f'''
+    #         Ocorreu algum erro durante as alterações de dados:\n
+    #         Código de procedimento(atual): {procedure_code}\n
+    #         Valores lidos:\n
+    #         Tipo de tabela(atual) --> {table_type}
+    #         Tipo de tabela(novo) --> {new_table_type}
+    #         Código de procedimento(novo) --> {new_procedure_code}
+    #         Unidade de médida (atual) --> {unity_measure}
+    #         Unidade de médida (novo) --> {new_unity_measure}''')
+    #
+    #     elif e == 2:
+    #         mb.showerror('Erro', f'''
+    #         Ocorreu algum erro durante as alterações de valores:\n
+    #         Código de procedimento: {procedure_code}\n
+    #         Valores lidos:\n
+    #         Valor unitário (atual) --> {unitary_value}
+    #         Valor unitário (novo) --> {new_unitary_value}
+    #         ''')
+
+    if data_alteration_check == 0 and value_alteration_check == 0:
+        mb.showwarning('Erro', 'Escolha o modo de alteração')
+
+    elif control_var > 0:
+        for button in (alteration_button, value_alteration_check_button,
+                       data_alteration_check_button, check_button_information):
+            button.destroy()
+
+        global saveGuide_button
+        saveGuide_button = cTk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuideAfterAlterations())
+        saveGuide_button.pack(side='bottom', pady=5, padx=5)
+
+    else:
+        mb.showinfo('Atenção', 'Não foi realizada nenhuma alteração.')
+
+
+def generateHashAndSave():
+    file_type = (('XML files', '*.xml'), ('All files', '*.*'))
+    guides_paths = fd.askopenfilenames(filetypes=file_type)
+    if guides_paths != '':
+        for guide in guides_paths:
+            tiss_guide = ET.parse(guide, parser=ET.XMLParser(encoding="ISO-8859-1"))
+            root_tag = tiss_guide.getroot()
+            root_tag_without_hash_text = removeHashTextFromGuide(root_tag)
+            all_guide_tags = root_tag_without_hash_text.iter()
+            new_hash_code = generateNewHashCode(all_guide_tags)
+            root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
+            tiss_guide.write(guide.split('_')[0] + f'_{new_hash_code}.xml', encoding="ISO-8859-1")
+
+        if len(guides_paths) > 1:
+            mb.showinfo('Info', 'Arquivos salvos!')
+        else:
+            mb.showinfo('Info', 'Arquivo salvo!')
+    else:
+        mb.showwarning(title='Erro', message='A guia não foi escolhida!')
+
+
+def createRelativeButtons():
     global generateHashAndSave_button, chooseGuide_button
 
     generateHashAndSave_button = cTk.CTkButton(frame, text='Gerar hash', command=lambda: generateHashAndSave())
@@ -261,311 +478,61 @@ def createGui():
     frame = cTk.CTkFrame(window)
     frame.pack(side='left', fill='both', padx=10, pady=10, expand=True)
 
-    # DEFAULT BUTTONS
-    openPlan_button = cTk.CTkButton(frame, text='Abrir planilha', command=lambda: openPlan())
-    openPlan_button.pack(side='bottom', pady=5, padx=5)
+    # DEFAULT BUTTON
+    open_plan_button = cTk.CTkButton(frame, text='Abrir planilha', command=lambda: openPlan())
+    open_plan_button.pack(side='bottom', pady=5, padx=5)
 
-    createDefaultButtons()
+    # RELATIVE BUTTONS
+    createRelativeButtons()
 
     return window
 
 
-# def waitingAlterationConfig():
-#     global cancel_button, check_button_information, alteration_button, saveGuide_button, \
-#         data_alteration_check_button, value_alteration_check_button
-#
-#     # BUTTONS AFTER CHOOSE GUIDE
-#     cancel_button = cTk.CTkButton(frame, text='Cancelar', command=lambda: cancelAlteration())
-#     cancel_button.pack(side='bottom', pady=5, padx=5)
-#
-#     check_button_information = cTk.CTkLabel(frame, text='Escolha os modos de alteração:')
-#     check_button_information.pack(side='top', pady=5, padx=5)
-#
-#     alteration_button = cTk.CTkButton(frame, text='Realizar alterações', command=lambda: doAlteration())
-#     alteration_button.pack(side='bottom', pady=5, padx=5)
-#
-#     data_alteration_check_button = cTk.CTkSwitch(frame, text='Alteração de dados', text_color='white')
-#     data_alteration_check_button.pack(pady=10, padx=5)
-#
-#     value_alteration_check_button = cTk.CTkSwitch(frame, text='Alteração de valor', text_color='white')
-#     value_alteration_check_button.pack(side='top', padx=5, pady=10)
-#
-#     generateHashAndSave_button.destroy()
-#     chooseGuide_button.destroy()
-
-
-# def cancelAlteration():
-#     global chooseGuide_button, generateHashAndSave_button
-#     # REDEFINE BUTTONS
-#     if "saveGuide_button" not in globals():
-#         for button in (alteration_button, cancel_button, data_alteration_check_button, value_alteration_check_button,
-#                        check_button_information):
-#             button.destroy()
-#     else:
-#         for button in (saveGuide_button, cancel_button):
-#             button.destroy()
-#
-#     createDefaultButtons()
-
-
-def chooseGuide():
-    global guide_path, tiss_guide, root_tag
-
-    file_type = (('XML files', '*.xml'), ('All files', '*.*'))
-    # guide_path = r"C:\Users\eliasp\Downloads\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0 (2).xml" # hospitalization
-    # guide_path = r"C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\tests\0001_d8cade6ca875fb8add14c00b99d6fbdc.xml"
-    guide_path = r"C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\tests\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0 (2).xml"
-    # guide_path = fd.askopenfilename(filetypes=file_type)
-    if guide_path != '':
-        tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
-        root_tag = tiss_guide.getroot()
-
-    else:
-        mb.showwarning(title='Erro', message='A guia não foi escolhida!')
-
-
-def getGuideType():
-    global guide_type
-    possibles_guide_type = '{' f'{ans_prefix["ans"]}' '}guiaSP-SADT', '{' f'{ans_prefix["ans"]}' '}guiaResumoInternacao'
-
-    accounts = root_tag.iter(possibles_guide_type[0])
-    if len(list(accounts)) > 0:
-        accounts = root_tag.iter(possibles_guide_type[0])
-        guide_type = 'SADT'
-        return accounts
-
-    else:
-        accounts = root_tag.iter(possibles_guide_type[1])
-        guide_type = 'HOSPITALIZATION'
-        return accounts
-
-
-def doAlteration():
-    global control_var, saveGuide_button
-    data_alteration_check = data_alteration_check_button.get()
-    value_alteration_check = value_alteration_check_button.get()
-    reviews_list = []
-    control_var = 0
-
-    def doDataAlteration():
-        global control_var
-        if data_alteration_check == 1:
-            # READ PLAN OF DATA ALTERATION IN EXCEL
-            table_reviews = PD.read_excel("sources/Teste.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
-
-            line_count = len(table_reviews.index)
-            columns_count = len(table_reviews.columns)
-            for i in range(0, line_count):
-                for j in range(0, columns_count):
-                    # INSERT LINE OF CRITICAL IN A LIST
-                    reviews_list.append(table_reviews.iloc[i][j])
-                    if len(reviews_list) == 7:  # WHEN LINE IS COMPLETE
-                        global guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
-                        [guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
-                         new_unity_measure] = returnReviewLine(reviews_list, 'data')
-
-                        reviews_list.clear()
-                        if guide_type == 'SADT':
-                            for guide in guide_accounts:
-                                if guide_number != '':
-                                    procedures_executed_and_expenses = getAllAccountProcedures(guide)
-
-                                    specified_procedure_data = searchForSpecifiedProcedure(
-                                        procedures_executed_and_expenses['Executed procedures'],
-                                        procedures_executed_and_expenses['Expenses procedures'])
-
-                                    if specified_procedure_data is not None:
-                                        alterTableType()
-                                        alterUnityMeasure()
-                                        alterProcedureCode()
-                                        control_var += 1
-                                        break
-                                else:
-                                    procedures_executed_and_expenses = getAllAccountProcedures(guide)
-                                    specified_procedure_data = searchForSpecifiedProcedure(
-                                        procedures_executed_and_expenses['Executed procedures'],
-                                        procedures_executed_and_expenses['Expenses procedures'])
-                                    if specified_procedure_data is not None:
-                                        alterTableType()
-                                        alterUnityMeasure()
-                                        alterProcedureCode()
-                                        control_var += 1
-
-                        if guide_type == 'HOSPITALIZATION':
-                            for guide_data in guide_accounts:
-                                procedures_executed_and_expenses = getAllAccountProcedures(guide_data)
-                                specified_procedure_data = searchForSpecifiedProcedure(
-                                    procedures_executed_and_expenses['Executed procedures'],
-                                    procedures_executed_and_expenses['Expenses procedures'])
-
-                                if specified_procedure_data is not None:
-                                    alterTableType()
-                                    alterUnityMeasure()
-                                    alterProcedureCode()
-                                    control_var += 1
-
-    def doValueAlteration():
-        global control_var
-        if value_alteration_check == 1:
-            # READ PLAN OF VALUES ALTERATIONS IN EXCEL
-            table_reviews = PD.read_excel("sources/Teste.xlsx", sheet_name='2', dtype=str,
-                                          keep_default_na=False)
-
-            line_count = len(table_reviews.index)
-            columns_count = len(table_reviews.columns)
-            for i in range(0, line_count):
-                for j in range(0, columns_count):
-                    # INSERT LINE OF CRITICAL IN A LIST
-                    reviews_list.append(table_reviews.iloc[i][j])
-                    if len(reviews_list) == 4:  # WHEN LINE IS COMPLETE
-                        global guide_number, procedure_code, unitary_value, new_unitary_value
-                        [guide_number, procedure_code, unitary_value, new_unitary_value] = returnReviewLine(
-                            reviews_list, 'values')
-
-                        reviews_list.clear()
-
-                        if guide_type == 'SADT':
-                            for guide in guide_accounts:
-                                if guide_number != '':
-                                    procedures_executed_and_expenses = getAllAccountProcedures(guide)
-                                    specified_procedure_data = searchForSpecifiedProcedure(
-                                        procedures_executed_and_expenses['Executed procedures'],
-                                        procedures_executed_and_expenses['Expenses procedures'])
-
-                                    if specified_procedure_data is not None:
-                                        alterValue()
-                                        control_var += 1
-                                        break
-                                else:
-                                    procedures_executed_and_expenses = getAllAccountProcedures(guide)
-                                    specified_procedure_data = searchForSpecifiedProcedure(
-                                        procedures_executed_and_expenses['Executed procedures'],
-                                        procedures_executed_and_expenses['Expenses procedures'])
-                                    if specified_procedure_data is not None:
-                                        alterValue()
-                                        control_var += 1
-
-                        elif guide_type == 'HOSPITALIZATION':
-                            for guide in guide_accounts:
-                                procedures_executed_and_expenses = getAllAccountProcedures(guide)
-                                specified_procedure_data = searchForSpecifiedProcedure(
-                                    procedures_executed_and_expenses['Executed procedures'],
-                                    procedures_executed_and_expenses['Expenses procedures'])
-                                if specified_procedure_data is not None:
-                                    alterValue()
-                                    control_var += 1
-
-    # try:
-    e = 1
-    doDataAlteration()
-    e = 2
-    doValueAlteration()
-    # except Exception:
-    #     if e == 1:
-    #         mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de dados')
-    #
-    #
-    #     elif e == 2:
-    #         mb.showerror('Erro', 'Ocorreu algum erro durante as alterações de valores')
-
-    if data_alteration_check == 0 and value_alteration_check == 0:
-        mb.showwarning('Erro', 'Escolha o modo de alteração')
-
-    elif control_var > 0:
-        for button in (alteration_button, value_alteration_check_button,
-                       data_alteration_check_button, check_button_information):
+def cancelAlteration():
+    # REDEFINE BUTTONS
+    if "saveGuide_button" not in globals():
+        for button in (alteration_button, cancel_button, data_alteration_check_button, value_alteration_check_button,
+                       check_button_information):
             button.destroy()
-        saveGuide_button = cTk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuide())
-        saveGuide_button.pack(side='bottom', pady=5, padx=5)
 
     else:
-        mb.showinfo('Atenção', 'Não foi realizada nenhuma alteração.')
+        for button in (saveGuide_button, cancel_button):
+            button.destroy()
+            control_var = 0
 
 
-def openPlan():
-    path = os.path.abspath('sources/Teste.xlsx')
-    os.startfile(f"{path}")
+def waitingAlterationConfig():
+    global cancel_button, check_button_information, alteration_button, saveGuide_button, \
+        data_alteration_check_button, value_alteration_check_button
+
+    # DESTROY RELATIVE BUTTONS
+    generateHashAndSave_button.destroy()
+    chooseGuide_button.destroy()
+
+    # BUTTONS AFTER GUIDE CHOOSE
+    cancel_button = cTk.CTkButton(frame, text='Cancelar', command=lambda: cancelAlteration())
+    cancel_button.pack(side='bottom', pady=5, padx=5)
+
+    check_button_information = cTk.CTkLabel(frame, text='Escolha os modos de alteração:')
+    check_button_information.pack(side='top', pady=5, padx=5)
+
+    alteration_button = cTk.CTkButton(frame, text='Realizar alterações', command=lambda: doAlterationAction())
+    alteration_button.pack(side='bottom', pady=5, padx=5)
+
+    data_alteration_check_button = cTk.CTkSwitch(frame, text='Alteração de dados', text_color='white')
+    data_alteration_check_button.pack(pady=10, padx=5)
+
+    value_alteration_check_button = cTk.CTkSwitch(frame, text='Alteração de valor', text_color='white')
+    value_alteration_check_button.pack(side='top', padx=5, pady=10)
 
 
-def generateHashAndSave():
-    global guide_path, tiss_guide, root_tag, guide
-    file_type = (('XML files', '*.xml'), ('All files', '*.*'))
-    guide_path = fd.askopenfilenames(filetypes=file_type)
-    if guide_path != '':
-        for guide in guide_path:
-            guide = guide
-            tiss_guide = ET.parse(guide, parser=ET.XMLParser(encoding="ISO-8859-1"))
-            saveGuide()
-
-        if len(guide_path) > 1:
-            mb.showinfo('Sucesso', 'Arquivos salvos!')
-        else:
-            mb.showinfo('Sucesso', 'Arquivo salvo!')
-    else:
-        mb.showwarning(title='Erro', message='A guia não foi escolhida!')
-
+    createRelativeButtons()
 
 ########################################################################################################################
 
-# global guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
-# guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure = \
-#     '', '60015179', '', '18', '20', '', ''
-# guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure = \
-#     '', '99999917', '', '18', '20', '', ''
 
-chooseGuide()
-guide_accounts = getGuideType()
-
-global control_var
-control_var = 0
-
-table_reviews = PD.read_excel("sources/Teste.xlsx", sheet_name='2', dtype=str,
-                                          keep_default_na=False)
-
-line_count = len(table_reviews.index)
-columns_count = len(table_reviews.columns)
-reviews_list = []
-for i in range(0, line_count):
-    for j in range(0, columns_count):
-        # INSERT LINE OF CRITICAL IN A LIST
-        reviews_list.append(table_reviews.iloc[i][j])
-        if len(reviews_list) == 4:  # WHEN LINE IS COMPLETE
-            global guide_number, procedure_code, unitary_value, new_unitary_value
-            [guide_number, procedure_code, unitary_value, new_unitary_value] = returnReviewLine(
-                reviews_list, 'values')
-
-            reviews_list.clear()
-
-            if guide_type == 'SADT':
-                for guide in guide_accounts:
-                    if guide_number != '':
-                        procedures_executed_and_expenses = getAllAccountProcedures(guide)
-                        specified_procedure_data = searchForSpecifiedProcedure(
-                            procedures_executed_and_expenses['Executed procedures'],
-                            procedures_executed_and_expenses['Expenses procedures'])
-
-                        if specified_procedure_data is not None:
-                            alterValue()
-                            control_var += 1
-                            break
-                    else:
-                        procedures_executed_and_expenses = getAllAccountProcedures(guide)
-                        specified_procedure_data = searchForSpecifiedProcedure(
-                            procedures_executed_and_expenses['Executed procedures'],
-                            procedures_executed_and_expenses['Expenses procedures'])
-                        if specified_procedure_data is not None:
-                            alterValue()
-                            control_var += 1
-
-            elif guide_type == 'HOSPITALIZATION':
-                for guide in guide_accounts:
-                    procedures_executed_and_expenses = getAllAccountProcedures(guide)
-                    specified_procedure_data = searchForSpecifiedProcedure(
-                        procedures_executed_and_expenses['Executed procedures'],
-                        procedures_executed_and_expenses['Expenses procedures'])
-                    if specified_procedure_data is not None:
-                        alterValue()
-                        control_var += 1
+window = createGui()
+window.mainloop()
 
 if control_var > 0:
     print(control_var)
