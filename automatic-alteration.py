@@ -79,7 +79,7 @@ def recalculateAllTotalValues(difference):
 
     for total_value in account_total_values_tag:
         # IF TOTAL VALUE LARGER THAN DIFFERENCE VALUE ALTER
-        if total_value.text > difference:
+        if float(total_value.text) > float(difference):
             total_value.text = f'{float(total_value.text) - float(difference):.2f}'
             general_total_values_tag.text = f'{float(general_total_values_tag.text) - float(difference):.2f}'
             break
@@ -105,7 +105,7 @@ def alterValues(specified_procedure_data):
         procedure_total_value_tag.text = new_procedure_total_value
 
         # IF OLD VALUE LARGER THAN NEW VALUE
-        if f'{float(old_procedure_total_value):.2f}' > f'{new_procedure_total_value:.2f}':
+        if f'{float(old_procedure_total_value):.2f}' > f'{float(new_procedure_total_value):.2f}':
             value_difference = f'{float(old_procedure_total_value) - float(procedure_total_value_tag.text):.2f}'
         else:
             value_difference = f'{float(new_procedure_total_value) - float(old_procedure_total_value):.2f}'
@@ -205,7 +205,7 @@ def getGuideType():
         return accounts
 
     else:
-        accounts = root_tag.iter(possibles_guide_type[1])
+        accounts = list(root_tag.iter(possibles_guide_type[1]))
         guide_type = 'HOSPITALIZATION'
         return accounts
 

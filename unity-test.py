@@ -76,10 +76,9 @@ def recalculateAllTotalValues(difference):
     # GET ACCOUNT TOTAL VALUES TAGS
     account_total_values_tag = account.find('ans:valorTotal', ans_prefix)
     general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
-
     for total_value in account_total_values_tag:
         # IF TOTAL VALUE LARGER THAN DIFFERENCE VALUE ALTER
-        if total_value.text > difference:
+        if float(total_value.text) > float(difference):
             total_value.text = f'{float(total_value.text) - float(difference):.2f}'
             general_total_values_tag.text = f'{float(general_total_values_tag.text) - float(difference):.2f}'
             break
@@ -105,7 +104,7 @@ def alterValues(specified_procedure_data):
         procedure_total_value_tag.text = new_procedure_total_value
 
         # IF OLD VALUE LARGER THAN NEW VALUE
-        if f'{float(old_procedure_total_value):.2f}' > f'{new_procedure_total_value:.2f}':
+        if f'{float(old_procedure_total_value):.2f}' > f'{float(new_procedure_total_value):.2f}':
             value_difference = f'{float(old_procedure_total_value) - float(procedure_total_value_tag.text):.2f}'
         else:
             value_difference = f'{float(new_procedure_total_value) - float(old_procedure_total_value):.2f}'
@@ -205,7 +204,7 @@ def getGuideType():
         return accounts
 
     else:
-        accounts = root_tag.iter(possibles_guide_type[1])
+        accounts = list(root_tag.iter(possibles_guide_type[1]))
         guide_type = 'HOSPITALIZATION'
         return accounts
 
@@ -236,7 +235,9 @@ def getExecutedAndExpensesProcedures(guide_account):
 
 
 def getAllAccountProcedures(guide_account):
-    print('     Função: Executou getAllAccountProcedures(guide_account)')
+    ###########################################################
+    print('     Função: getAllAccountProcedures(guide_account)')
+    ###########################################################
     if guide_type == 'SADT' and guide_number != '':
         guide_account = guide_account.find(f'ans:cabecalhoGuia[ans:numeroGuiaPrestador="{guide_number}"]..', ans_prefix)
         if isExists(guide_account):
@@ -252,7 +253,9 @@ def getAllAccountProcedures(guide_account):
 
 
 def searchForSpecifiedProcedure(account_executed_procedures, account_expenses_procedures):
+    ###########################################################
     print('     Função: searchForSpecifiedProcedure(account_executed_procedures, account_expenses_procedures)')
+    ###########################################################
     # IF ACCOUNT HAVE EXECUTED PROCEDURES TAG (procedimentosExecutados)
     if isExists(account_executed_procedures):
         for data in account_executed_procedures:
@@ -276,13 +279,16 @@ def searchForSpecifiedProcedure(account_executed_procedures, account_expenses_pr
             # IF ACCOUNT HAVE THE SPECIFIED PROCEDURE GET HIS DATA
             if isExists(expense_procedure):
                 expense_procedure_data = expense_procedure.find('ans:servicosExecutados', ans_prefix)
+
                 return expense_procedure_data
         else:
             mb.showinfo('Info', message=f'Procedimento: {procedure_code} não foi encontrado na guia escolhida')
 
 
-def getSpecifiedProcedureData(account):
+def getSpecifiedProcedureData():
+    ###########################################################
     print('Função: getSpecifiedProcedureData(account)')
+    ###########################################################
     procedures_executed_and_expenses = getAllAccountProcedures(account)
     specified_procedure_data = searchForSpecifiedProcedure(
         procedures_executed_and_expenses['Executed procedures'],
@@ -293,8 +299,10 @@ def getSpecifiedProcedureData(account):
 
 def doDataAlteration(guide_accounts):
     global control_var
+    ###########################################################
     global lines
     lines = 0
+    ###########################################################
     # READ WORKSHEET TABLE OF DATA ALTERATION
     table_reviews = PD.read_excel("sources/Teste.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
     print(f'Variável: Quantidade de linhas a serem lidas: {len(table_reviews.values)}')
@@ -328,20 +336,20 @@ def doDataAlteration(guide_accounts):
                         control_var += 1
 
         if guide_type == 'HOSPITALIZATION':
-            print('entrou no if')
             for account in guide_accounts:
-                specified_procedure_data = getSpecifiedProcedureData(account)
-                print(procedure_code)
-            # print(f'Encontrou o seguinte procedimento: {specified_procedure_data.find("ans:codigoProcedimento", ans_prefix).text}')
-            #     # if specified_procedure_data is not None:
-            #     #     alterTableType(specified_procedure_data)
-            #     #     alterUnityMeasure(specified_procedure_data)
-            #     #     alterProcedureCode(specified_procedure_data)
-            #     #     control_var += 1
+                specified_procedure_data = getSpecifiedProcedureData()
+
+                if specified_procedure_data is not None:
+                    alterTableType(specified_procedure_data)
+                    alterUnityMeasure(specified_procedure_data)
+                    alterProcedureCode(specified_procedure_data)
+                    control_var += 1
 
 
 def doValueAlteration(guide_accounts):
     global control_var
+    global lines
+    lines = 0
     # READ WORKSHEET TABLE OF VALUE ALTERATION
     table_reviews = PD.read_excel("sources/Teste.xlsx", sheet_name='2', dtype=str,
                                   keep_default_na=False)
@@ -350,7 +358,9 @@ def doValueAlteration(guide_accounts):
     for review_line in table_reviews.values:
         global guide_number, procedure_code, unitary_value, new_unitary_value
         [guide_number, procedure_code, unitary_value, new_unitary_value] = returnReviewLine(review_line, 'values')
-
+        ###########################################################
+        lines += 1
+        ###########################################################
         if guide_type == 'SADT':
             global account
             for account in guide_accounts:
@@ -380,50 +390,51 @@ def doValueAlteration(guide_accounts):
 
 def doAlterationAction():
     global control_var
-    data_alteration_check = 1 # data_alteration_check_button.get()
-    value_alteration_check = 0 # value_alteration_check_button.get()
+    data_alteration_check = 0 # data_alteration_check_button.get()
+    value_alteration_check = 1 # value_alteration_check_button.get()
     guide_accounts = getGuideType()
-    try:
-        if data_alteration_check == 1:
-            e = 1
-            print('Try: Alteração de dados')
-            doDataAlteration(guide_accounts)
+    # try:
+    if data_alteration_check == 1:
+        e = 1
+        print('Try: Alteração de dados')
+        doDataAlteration(guide_accounts)
 
-        if value_alteration_check == 1:
-            e = 2
-            doValueAlteration(guide_accounts)
-    except Exception as e:
-        if e == 1:
-            mb.showerror('Erro', f'''
-            Ocorreu algum erro durante as alterações de dados:\n
-            Código de procedimento(atual): {procedure_code}\n
-            Valores lidos:\n
-            Tipo de tabela(atual) --> {table_type}
-            Tipo de tabela(novo) --> {new_table_type}
-            Código de procedimento(novo) --> {new_procedure_code}
-            Unidade de médida (atual) --> {unity_measure}
-            Unidade de médida (novo) --> {new_unity_measure}''')
-
-        elif e == 2:
-            mb.showerror('Erro', f'''
-            Ocorreu algum erro durante as alterações de valores:\n
-            Código de procedimento: {procedure_code}\n
-            Valores lidos:\n
-            Valor unitário (atual) --> {unitary_value}
-            Valor unitário (novo) --> {new_unitary_value}
-            ''')
+    if value_alteration_check == 1:
+        e = 2
+        doValueAlteration(guide_accounts)
+    # except Exception as e:
+    #     if e == 1:
+    #         mb.showerror('Erro', f'''
+    #         Ocorreu algum erro durante as alterações de dados:\n
+    #         Código de procedimento(atual): {procedure_code}\n
+    #         Valores lidos:\n
+    #         Tipo de tabela(atual) --> {table_type}
+    #         Tipo de tabela(novo) --> {new_table_type}
+    #         Código de procedimento(novo) --> {new_procedure_code}
+    #         Unidade de médida (atual) --> {unity_measure}
+    #         Unidade de médida (novo) --> {new_unity_measure}''')
+    #
+    #     elif e == 2:
+    #         mb.showerror('Erro', f'''
+    #         Ocorreu algum erro durante as alterações de valores:\n
+    #         Código de procedimento: {procedure_code}\n
+    #         Valores lidos:\n
+    #         Valor unitário (atual) --> {unitary_value}
+    #         Valor unitário (novo) --> {new_unitary_value}
+    #         ''')
 
     if data_alteration_check == 0 and value_alteration_check == 0:
         mb.showwarning('Erro', 'Escolha o modo de alteração')
 
-    # elif control_var > 0:
-    #     for button in (alteration_button, value_alteration_check_button,
-    #                    data_alteration_check_button, check_button_information):
-    #         button.destroy()
-    #
-    #     global saveGuide_button
-    #     saveGuide_button = cTk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuideAfterAlterations())
-    #     saveGuide_button.pack(side='bottom', pady=5, padx=5)
+    elif control_var > 0:
+        # for button in (alteration_button, value_alteration_check_button,
+        #                data_alteration_check_button, check_button_information):
+        #     button.destroy()
+        #
+        # global saveGuide_button
+        # saveGuide_button = cTk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuideAfterAlterations())
+        # saveGuide_button.pack(side='bottom', pady=5, padx=5)
+        saveGuideAfterAlterations()
 
     else:
         mb.showinfo('Atenção', 'Não foi realizada nenhuma alteração.')
@@ -536,8 +547,6 @@ chooseGuide(r'C:\Users\elias\Documents\GitHub\python-automatics-data-alterations
 doAlterationAction()
 
 print(f'Variável: Quantidade de críticas lidas: {lines}')
-
-saveGuideAfterAlterations()
 
 
 # window = createGui()

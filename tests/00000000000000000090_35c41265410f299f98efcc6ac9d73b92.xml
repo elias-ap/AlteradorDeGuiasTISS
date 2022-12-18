@@ -691,12 +691,12 @@
 </ans:procedimentoExecutado>
 </ans:procedimentosExecutados>
 <ans:valorTotal>
-<ans:valorProcedimentos>29779.71</ans:valorProcedimentos>
+<ans:valorProcedimentos>29178.75</ans:valorProcedimentos>
 <ans:valorDiarias>4494.78</ans:valorDiarias>
 <ans:valorTaxasAlugueis>14529.62</ans:valorTaxasAlugueis>
 <ans:valorMateriais>33952.16</ans:valorMateriais>
 <ans:valorMedicamentos>71610.72</ans:valorMedicamentos>
-<ans:valorTotalGeral>154366.99</ans:valorTotalGeral>
+<ans:valorTotalGeral>153766.03</ans:valorTotalGeral>
 </ans:valorTotal>
 <ans:outrasDespesas>
 <ans:despesa>
@@ -710,8 +710,8 @@
 <ans:quantidadeExecutada>2</ans:quantidadeExecutada>
 <ans:unidadeMedida>036</ans:unidadeMedida>
 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
-<ans:valorUnitario>42.02</ans:valorUnitario>
-<ans:valorTotal>84.04</ans:valorTotal>
+<ans:valorUnitario>40.00</ans:valorUnitario>
+<ans:valorTotal>80.00</ans:valorTotal>
 <ans:descricaoProcedimento>ALIMENTACAO ENTERAL, PREPARO, NA UTI/SEMI UTI</ans:descricaoProcedimento>
 <ans:registroANVISA>0</ans:registroANVISA>
 <ans:codigoRefFabricante>0</ans:codigoRefFabricante>
@@ -729,8 +729,8 @@
 <ans:quantidadeExecutada>9</ans:quantidadeExecutada>
 <ans:unidadeMedida>036</ans:unidadeMedida>
 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
-<ans:valorUnitario>364.65</ans:valorUnitario>
-<ans:valorTotal>3281.85</ans:valorTotal>
+<ans:valorUnitario>400.00</ans:valorUnitario>
+<ans:valorTotal>3600.00</ans:valorTotal>
 <ans:descricaoProcedimento>DIARIA DE ENFERMARIA</ans:descricaoProcedimento>
 <ans:registroANVISA>0</ans:registroANVISA>
 <ans:codigoRefFabricante>0</ans:codigoRefFabricante>
@@ -748,8 +748,8 @@
 <ans:quantidadeExecutada>1</ans:quantidadeExecutada>
 <ans:unidadeMedida>036</ans:unidadeMedida>
 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
-<ans:valorUnitario>1212.93</ans:valorUnitario>
-<ans:valorTotal>1212.93</ans:valorTotal>
+<ans:valorUnitario>1000.00</ans:valorUnitario>
+<ans:valorTotal>1000.00</ans:valorTotal>
 <ans:descricaoProcedimento>DIARIA DE UTI INFANTIL/PEDIATRICA</ans:descricaoProcedimento>
 <ans:registroANVISA>0</ans:registroANVISA>
 <ans:codigoRefFabricante>0</ans:codigoRefFabricante>
@@ -767,8 +767,8 @@
 <ans:quantidadeExecutada>8</ans:quantidadeExecutada>
 <ans:unidadeMedida>036</ans:unidadeMedida>
 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
-<ans:valorUnitario>42.02</ans:valorUnitario>
-<ans:valorTotal>336.16</ans:valorTotal>
+<ans:valorUnitario>50.25</ans:valorUnitario>
+<ans:valorTotal>402.00</ans:valorTotal>
 <ans:descricaoProcedimento>ALIMENTACAO ENTERAL, PREPARO, FORA DA UTI/SEMI UTI</ans:descricaoProcedimento>
 <ans:registroANVISA>0</ans:registroANVISA>
 <ans:codigoRefFabricante>0</ans:codigoRefFabricante>
@@ -2882,6 +2882,6 @@
 </ans:loteGuias>
 </ans:prestadorParaOperadora>
 <ans:epilogo>
-<ans:hash>ba313cac6d8bf136fdc5f46e4fd26fc0</ans:hash>
+<ans:hash>35c41265410f299f98efcc6ac9d73b92</ans:hash>
 </ans:epilogo>
 </ans:mensagemTISS>
