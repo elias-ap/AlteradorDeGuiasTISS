@@ -202,7 +202,7 @@ def createDefaultButtons():
 def createGui():
     global frame, generateHashAndSave_button, chooseGuide_button
 
-    # GUI COLOR CONFIG
+    # Gui COLOR CONFIG
     cTk.set_appearance_mode('dark')
     cTk.set_default_color_theme('green')
 
