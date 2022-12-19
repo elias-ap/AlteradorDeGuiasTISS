@@ -24,7 +24,7 @@ def closeApplicationIfConditionsNotAttend():
     if current_executable_name != "Alterador de Guias TISS.exe":
         close()
 
-    elif current_local_path != f'{right_path}\\{right_executable_name}':
+    elif current_local_path != fr'{right_path}\{right_executable_name}':
         close()
 
 

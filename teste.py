@@ -4,6 +4,7 @@ import os
 import sys
 from tkinter import messagebox as mb
 
+
 def close():
     mb.showwarning('Erro', f'A aplicação só executará no local:\n {right_path}')
     sys.exit()
@@ -11,16 +12,18 @@ def close():
 
 def closeApplicationIfConditionsNotAttend():
     global right_path
-    right_path = r"C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file"
-    right_executable_name = "teste.py"
-    current_local_path = os.path.abspath(right_executable_name)
+    right_path = r"O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS\teste.exe"
+    right_executable_name = "teste.exe"
+    current_path = os.path.abspath(__file__)
     current_executable_name = os.path.basename(__file__)
-    if current_executable_name != "teste.py":
-        close()
-
-    elif current_local_path != f'{right_path}\\{right_executable_name}' :
-        close()
+    l = open('teste.txt', 'x')
+    l.write(f'{right_path}\n{current_path}\n{current_executable_name}')
+    if current_executable_name != right_executable_name:
+        mb.showwarning('Erro', f'Nome diferente')
+    elif current_path != right_path:
+        mb.showwarning('Erro', f'Local diferente')
+    else:
+        window = tk.Tk()
+        window.mainloop()
 
 closeApplicationIfConditionsNotAttend()
-window = tk.Tk()
-window.mainloop()
