@@ -1,11 +1,20 @@
+# This Python file uses the following encoding: utf-8
 # IMPORTS
 import xml.etree.ElementTree as ET
 import os
+import sys
 import pandas as PD
 import hashlib
 import customtkinter as CTk
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
+
+local_path = r"O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS\Alterador de Guias TISS.exe"
+current_path = os.path.abspath("Alterador de Guias TISS.exe")
+if current_path != local_path:
+    local_path = local_path.rsplit("\\", 1)[0]
+    mb.showwarning('Erro', f'A aplicação só executará no local:\n {local_path}')
+    sys.exit()
 
 # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
 global ans_prefix
@@ -110,9 +119,9 @@ def alterValues(specified_procedure_data):
         else:
             value_difference = f'{float(new_procedure_total_value) - float(old_procedure_total_value):.2f}'
 
-    altered_data = 'valor unitário'
-    generateAlterationLog(altered_data, unitary_value, new_unitary_value)
-    recalculateAllTotalValues(value_difference)
+        altered_data = 'valor unitário'
+        generateAlterationLog(altered_data, unitary_value, new_unitary_value)
+        recalculateAllTotalValues(value_difference)
 
 
 def removeHashTextFromGuide(guide_root_tag):
