@@ -22,7 +22,7 @@ ans_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}
 
 
 def openWorksheet():
-    path = os.path.abspath('sources/Planilha de Críticas.xlsx')
+    path = os.path.abspath('Planilha de Críticas.xlsx')
     os.startfile(f"{path}")
 
 
@@ -300,7 +300,7 @@ def getSpecifiedProcedureData():
 def doDataAlteration(guide_accounts):
     global control_var
     # READ WORKSHEET TABLE OF DATA ALTERATION
-    table_reviews = PD.read_excel("sources/Planilha de Críticas.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
+    table_reviews = PD.read_excel("Planilha de Críticas.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
     for review_line in table_reviews.values:
         global guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
@@ -342,7 +342,7 @@ def doDataAlteration(guide_accounts):
 def doValueAlteration(guide_accounts):
     global control_var
     # READ WORKSHEET TABLE OF VALUE ALTERATION
-    table_reviews = PD.read_excel("sources/Planilha de Críticas.xlsx", sheet_name='2', dtype=str,
+    table_reviews = PD.read_excel("Planilha de Críticas.xlsx", sheet_name='2', dtype=str,
                                   keep_default_na=False)
 
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
