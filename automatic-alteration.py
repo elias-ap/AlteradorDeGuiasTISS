@@ -184,7 +184,6 @@ def chooseGuide():
     control_var = 0
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
     guide_path = fd.askopenfilename(filetypes=file_type)
-    print(guide_path)
     if guide_path != '':
         tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
         root_tag = tiss_guide.getroot()
