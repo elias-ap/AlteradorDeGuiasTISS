@@ -197,7 +197,6 @@ def saveGuide():
         tiss_guide.write(guide.split('_')[0].__add__(f'_{new_hash_code}.xml'), encoding="ISO-8859-1")
 
 
-
 def createDefaultButtons():
     global generateHashAndSave_button, chooseGuide_button
 

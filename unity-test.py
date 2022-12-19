@@ -109,9 +109,9 @@ def alterValues(specified_procedure_data):
         else:
             value_difference = f'{float(new_procedure_total_value) - float(old_procedure_total_value):.2f}'
 
-    altered_data = 'valor unitário'
-    generateAlterationLog(altered_data, unitary_value, new_unitary_value)
-    recalculateAllTotalValues(value_difference)
+        altered_data = 'valor unitário'
+        generateAlterationLog(altered_data, unitary_value, new_unitary_value)
+        recalculateAllTotalValues(value_difference)
 
 
 def removeHashTextFromGuide(guide_root_tag):
@@ -122,7 +122,6 @@ def removeHashTextFromGuide(guide_root_tag):
 def generateNewHashCode(all_tags):
     tags_texts = []
     unique_line_string = ''
-
     # FOR EVERY TAG REMOVE LINE BREAKS
     for tag in all_tags:
         tags_texts.append(tag.text.replace("\n", ''))
@@ -178,16 +177,16 @@ def saveGuideAfterAlterations():
     # cancelAlteration()
 
 
-def chooseGuide(path):
+def chooseGuide():
     global guide_path, tiss_guide, root_tag, control_var
-    guide_path = path
+    # guide_path = path
     control_var = 0
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
-    # guide_path = fd.askopenfilename(filetypes=file_type)
+    guide_path = fd.askopenfilename(filetypes=file_type)
     if guide_path != '':
         tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
         root_tag = tiss_guide.getroot()
-        # waitingAlterationConfig()
+        waitingAlterationConfig()
 
     else:
         mb.showwarning(title='Erro', message='A guia não foi escolhida!')
@@ -427,22 +426,23 @@ def doAlterationAction():
         mb.showwarning('Erro', 'Escolha o modo de alteração')
 
     elif control_var > 0:
-        # for button in (alteration_button, value_alteration_check_button,
-        #                data_alteration_check_button, check_button_information):
-        #     button.destroy()
-        #
-        # global saveGuide_button
-        # saveGuide_button = cTk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuideAfterAlterations())
-        # saveGuide_button.pack(side='bottom', pady=5, padx=5)
+        for button in (alteration_button, value_alteration_check_button,
+                       data_alteration_check_button, check_button_information):
+            button.destroy()
+
+        global saveGuide_button
+        saveGuide_button = cTk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuideAfterAlterations())
+        saveGuide_button.pack(side='bottom', pady=5, padx=5)
         saveGuideAfterAlterations()
 
     else:
         mb.showinfo('Atenção', 'Não foi realizada nenhuma alteração.')
 
 
-def generateHashAndSave():
+def generateHashAndSave(path):
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
-    guides_paths = fd.askopenfilenames(filetypes=file_type)
+    # guides_paths = fd.askopenfilenames(filetypes=file_type)
+    guides_paths = path
     if guides_paths != '':
         for guide in guides_paths:
             tiss_guide = ET.parse(guide, parser=ET.XMLParser(encoding="ISO-8859-1"))
@@ -451,6 +451,7 @@ def generateHashAndSave():
             all_guide_tags = root_tag_without_hash_text.iter()
             new_hash_code = generateNewHashCode(all_guide_tags)
             root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
+            print(new_hash_code)
             tiss_guide.write(guide.split('_')[0] + f'_{new_hash_code}.xml', encoding="ISO-8859-1")
 
         if len(guides_paths) > 1:
@@ -542,13 +543,16 @@ def waitingAlterationConfig():
 
 
 ########################################################################################################################
+file_path = r"C:\Users\eliasp\Downloads\00000000000000011327_b6d78976b263aa402e43795d596fda48 (1).xml", r"C:\Users\eliasp\Downloads\00000000000000011327_b6d78976b263aa402e43795d596fda48 (1).xml"
+# chooseGuide(r'C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\tests\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0.xml'.replace('\\', '/'))
+# doAlterationAction()
+# print(f'Variável: Quantidade de críticas lidas: {lines}')
 
-chooseGuide(r'C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\tests\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0.xml'.replace('\\', '/'))
-doAlterationAction()
+generateHashAndSave(file_path)
 
-print(f'Variável: Quantidade de críticas lidas: {lines}')
 
 
 # window = createGui()
 # window.mainloop()
+
 
