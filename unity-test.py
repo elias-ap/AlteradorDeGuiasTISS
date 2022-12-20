@@ -1,11 +1,12 @@
 # IMPORTS
 import xml.etree.ElementTree as ET
 import os
-import pandas as PD
+import pandas as pd
 import hashlib
-import customtkinter as cTk
+import customtkinter as ctk
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
+from Exceptions import Exceptions
 
 # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
 global ans_prefix
@@ -13,7 +14,7 @@ ans_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}
 
 
 def openWorksheet():
-    path = os.path.abspath('sources/Teste.xlsx')
+    path = os.path.abspath('Sources/Teste.xlsx')
     os.startfile(f"{path}")
 
 
@@ -171,8 +172,9 @@ def saveGuideAfterAlterations():
     root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
 
     # SAVE ALTERED GUIDE
-    tiss_guide.write(guide_path.split('_')[0] + f'_{new_hash_code}.xml', encoding="ISO-8859-1")
-    # createLogFile(guide_path)
+    output_path = r"C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\Tests\Output"
+    tiss_guide.write(f'{output_path}\\{os.path.basename(guide_path).split("_")[0]}_{new_hash_code}.xml', encoding="ISO-8859-1")
+    createLogFile(guide_path)
     # mb.showinfo(message='Arquivo salvo!')
     # cancelAlteration()
 
@@ -198,7 +200,7 @@ def getGuideType():
 
     accounts = root_tag.iter(possibles_guide_type[0])
     if len(list(accounts)) > 0:
-        accounts = root_tag.iter(possibles_guide_type[0])
+        accounts = list(root_tag.iter(possibles_guide_type[0]))
         guide_type = 'SADT'
         return accounts
 
@@ -235,13 +237,15 @@ def getExecutedAndExpensesProcedures(guide_account):
 
 def getAllAccountProcedures(guide_account):
     ###########################################################
-    print('     Função: getAllAccountProcedures(guide_account)')
+    # print('     Função: getAllAccountProcedures(guide_account)')
     ###########################################################
     if guide_type == 'SADT' and guide_number != '':
         guide_account = guide_account.find(f'ans:cabecalhoGuia[ans:numeroGuiaPrestador="{guide_number}"]..', ans_prefix)
         if isExists(guide_account):
             all_account_procedures = getExecutedAndExpensesProcedures(guide_account)
             return all_account_procedures
+        else:
+            raise Exception('Conta não encontrada', Exceptions.ACCOUNT_NOT_FOUND(line_number, guide_number))
     elif guide_type == 'SADT':
         all_account_procedures = getExecutedAndExpensesProcedures(guide_account)
         return all_account_procedures
@@ -253,7 +257,7 @@ def getAllAccountProcedures(guide_account):
 
 def searchForSpecifiedProcedure(account_executed_procedures, account_expenses_procedures):
     ###########################################################
-    print('     Função: searchForSpecifiedProcedure(account_executed_procedures, account_expenses_procedures)')
+    # print('     Função: searchForSpecifiedProcedure(account_executed_procedures, account_expenses_procedures)')
     ###########################################################
     # IF ACCOUNT HAVE EXECUTED PROCEDURES TAG (procedimentosExecutados)
     if isExists(account_executed_procedures):
@@ -281,13 +285,14 @@ def searchForSpecifiedProcedure(account_executed_procedures, account_expenses_pr
 
                 return expense_procedure_data
         else:
-            mb.showinfo('Info', message=f'Procedimento: {procedure_code} não foi encontrado na guia escolhida')
+            message = f'Procedimento: {procedure_code} não foi encontrado na guia{guide_number};\n'
+            not_found_procedures_list.append(message)
 
 
 def getSpecifiedProcedureData():
     ###########################################################
-    print('Função: getSpecifiedProcedureData(account)')
-    ###########################################################
+    # print('Função: getSpecifiedProcedureData(account)')
+    ###########################################################:
     procedures_executed_and_expenses = getAllAccountProcedures(account)
     specified_procedure_data = searchForSpecifiedProcedure(
         procedures_executed_and_expenses['Executed procedures'],
@@ -297,23 +302,23 @@ def getSpecifiedProcedureData():
 
 
 def doDataAlteration(guide_accounts):
-    global control_var
-    ###########################################################
-    global lines
-    lines = 0
+    global control_var, line_number, not_found_procedures_list
+    line_number = 1
     ###########################################################
     # READ WORKSHEET TABLE OF DATA ALTERATION
-    table_reviews = PD.read_excel("sources/Teste.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
-    print(f'Variável: Quantidade de linhas a serem lidas: {len(table_reviews.values)}')
-    print(f'Variável: Tipo de guia: {guide_type}')
+    table_reviews = pd.read_excel("Sources/Teste.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
+    ###########################################################
+    # print(f'Variável: Quantidade de linhas a serem lidas: {len(table_reviews.values)}')
+    # print(f'Variável: Tipo de guia: {guide_type}')
+    ###########################################################
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
+    not_found_procedures_list = []
+    not_found_procedures_list.append(f'Número de contas na guia: {len(guide_accounts)}\n')
     for review_line in table_reviews.values:
         global guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
         [guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
          new_unity_measure] = returnReviewLine(review_line, 'data')
-        ###########################################################
-        lines += 1
-        ###########################################################
+
         if guide_type == 'SADT':
             global account
             for account in guide_accounts:
@@ -343,23 +348,22 @@ def doDataAlteration(guide_accounts):
                     alterUnityMeasure(specified_procedure_data)
                     alterProcedureCode(specified_procedure_data)
                     control_var += 1
+        line_number += 1
 
 
 def doValueAlteration(guide_accounts):
-    global control_var
-    global lines
-    lines = 0
+    global control_var, line_number, not_found_procedures_list
+    line_number = 1
     # READ WORKSHEET TABLE OF VALUE ALTERATION
-    table_reviews = PD.read_excel("sources/Teste.xlsx", sheet_name='2', dtype=str,
+    table_reviews = pd.read_excel("Sources/Teste.xlsx", sheet_name='2', dtype=str,
                                   keep_default_na=False)
-
+    not_found_procedures_list = []
+    not_found_procedures_list.append(f'Número de contas na guia: {len(guide_accounts)}\n')
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
     for review_line in table_reviews.values:
         global guide_number, procedure_code, unitary_value, new_unitary_value
         [guide_number, procedure_code, unitary_value, new_unitary_value] = returnReviewLine(review_line, 'values')
-        ###########################################################
-        lines += 1
-        ###########################################################
+
         if guide_type == 'SADT':
             global account
             for account in guide_accounts:
@@ -385,42 +389,20 @@ def doValueAlteration(guide_accounts):
                 if specified_procedure_data is not None:
                     alterValues(specified_procedure_data)
                     control_var += 1
+        line_number += 1
 
 
 def doAlterationAction():
     global control_var
-    data_alteration_check = 0 # data_alteration_check_button.get()
-    value_alteration_check = 1 # value_alteration_check_button.get()
+    data_alteration_check = data_alteration_check_button.get()
+    value_alteration_check = value_alteration_check_button.get()
     guide_accounts = getGuideType()
-    # try:
+
     if data_alteration_check == 1:
-        e = 1
-        print('Try: Alteração de dados')
         doDataAlteration(guide_accounts)
 
     if value_alteration_check == 1:
-        e = 2
         doValueAlteration(guide_accounts)
-    # except Exception as e:
-    #     if e == 1:
-    #         mb.showerror('Erro', f'''
-    #         Ocorreu algum erro durante as alterações de dados:\n
-    #         Código de procedimento(atual): {procedure_code}\n
-    #         Valores lidos:\n
-    #         Tipo de tabela(atual) --> {table_type}
-    #         Tipo de tabela(novo) --> {new_table_type}
-    #         Código de procedimento(novo) --> {new_procedure_code}
-    #         Unidade de médida (atual) --> {unity_measure}
-    #         Unidade de médida (novo) --> {new_unity_measure}''')
-    #
-    #     elif e == 2:
-    #         mb.showerror('Erro', f'''
-    #         Ocorreu algum erro durante as alterações de valores:\n
-    #         Código de procedimento: {procedure_code}\n
-    #         Valores lidos:\n
-    #         Valor unitário (atual) --> {unitary_value}
-    #         Valor unitário (novo) --> {new_unitary_value}
-    #         ''')
 
     if data_alteration_check == 0 and value_alteration_check == 0:
         mb.showwarning('Erro', 'Escolha o modo de alteração')
@@ -431,18 +413,22 @@ def doAlterationAction():
             button.destroy()
 
         global saveGuide_button
-        saveGuide_button = cTk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuideAfterAlterations())
+        saveGuide_button = ctk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuideAfterAlterations())
         saveGuide_button.pack(side='bottom', pady=5, padx=5)
         saveGuideAfterAlterations()
-
     else:
         mb.showinfo('Atenção', 'Não foi realizada nenhuma alteração.')
 
+    if len(not_found_procedures_list) > 1:
+        message = ''
+        for item in not_found_procedures_list:
+            message += item
+        mb.showinfo('Info', message)
 
-def generateHashAndSave(path):
+
+def generateHashAndSave():
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
-    # guides_paths = fd.askopenfilenames(filetypes=file_type)
-    guides_paths = path
+    guides_paths = fd.askopenfilenames(filetypes=file_type)
     if guides_paths != '':
         for guide in guides_paths:
             tiss_guide = ET.parse(guide, parser=ET.XMLParser(encoding="ISO-8859-1"))
@@ -451,7 +437,6 @@ def generateHashAndSave(path):
             all_guide_tags = root_tag_without_hash_text.iter()
             new_hash_code = generateNewHashCode(all_guide_tags)
             root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
-            print(new_hash_code)
             tiss_guide.write(guide.split('_')[0] + f'_{new_hash_code}.xml', encoding="ISO-8859-1")
 
         if len(guides_paths) > 1:
@@ -465,10 +450,10 @@ def generateHashAndSave(path):
 def createRelativeButtons():
     global generateHashAndSave_button, chooseGuide_button
 
-    generateHashAndSave_button = cTk.CTkButton(frame, text='Gerar hash', command=lambda: generateHashAndSave())
+    generateHashAndSave_button = ctk.CTkButton(frame, text='Gerar hash', command=lambda: generateHashAndSave())
     generateHashAndSave_button.pack(side='bottom', pady=5, padx=5)
 
-    chooseGuide_button = cTk.CTkButton(frame, text='Carregar Guia', command=lambda: chooseGuide())
+    chooseGuide_button = ctk.CTkButton(frame, text='Carregar Guia', command=lambda: chooseGuide())
     chooseGuide_button.pack(side='bottom', pady=5, padx=5)
 
 
@@ -476,23 +461,23 @@ def createGui():
     global frame, generateHashAndSave_button, chooseGuide_button
 
     # GUI COLOR CONFIG
-    cTk.set_appearance_mode('dark')
-    cTk.set_default_color_theme('green')
+    ctk.set_appearance_mode('dark')
+    ctk.set_default_color_theme('green')
 
     # MAIN WINDOW
-    main_window = cTk.CTk()
-    cTk.CTk.iconbitmap(main_window, r'resources/icon.ico')
+    main_window = ctk.CTk()
+    ctk.CTk.iconbitmap(main_window, r'Resources/icon.ico')
     main_window.geometry('300x260')
     main_window.title('Alterador de Guias TISS')
     main_window.eval('tk::PlaceWindow . center')
     main_window.maxsize(300, 260)
 
     # MAIN FRAME
-    frame = cTk.CTkFrame(main_window)
+    frame = ctk.CTkFrame(main_window)
     frame.pack(side='left', fill='both', padx=10, pady=10, expand=True)
 
     # DEFAULT BUTTON
-    open_plan_button = cTk.CTkButton(frame, text='Abrir planilha', command=lambda: openWorksheet())
+    open_plan_button = ctk.CTkButton(frame, text='Abrir planilha', command=lambda: openWorksheet())
     open_plan_button.pack(side='bottom', pady=5, padx=5)
 
     # RELATIVE BUTTONS
@@ -526,33 +511,29 @@ def waitingAlterationConfig():
     chooseGuide_button.destroy()
 
     # BUTTONS AFTER GUIDE CHOOSE
-    cancel_button = cTk.CTkButton(frame, text='Cancelar', command=lambda: cancelAlteration())
+    cancel_button = ctk.CTkButton(frame, text='Cancelar', command=lambda: cancelAlteration())
     cancel_button.pack(side='bottom', pady=5, padx=5)
 
-    check_button_information = cTk.CTkLabel(frame, text='Escolha os modos de alteração:')
+    check_button_information = ctk.CTkLabel(frame, text='Escolha os modos de alteração:')
     check_button_information.pack(side='top', pady=5, padx=5)
 
-    alteration_button = cTk.CTkButton(frame, text='Realizar alterações', command=lambda: doAlterationAction())
+    alteration_button = ctk.CTkButton(frame, text='Realizar alterações', command=lambda: doAlterationAction())
     alteration_button.pack(side='bottom', pady=5, padx=5)
 
-    data_alteration_check_button = cTk.CTkSwitch(frame, text='Alteração de dados', text_color='white')
+    data_alteration_check_button = ctk.CTkSwitch(frame, text='Alteração de dados', text_color='white')
     data_alteration_check_button.pack(pady=10, padx=5)
 
-    value_alteration_check_button = cTk.CTkSwitch(frame, text='Alteração de valor', text_color='white')
+    value_alteration_check_button = ctk.CTkSwitch(frame, text='Alteração de valor', text_color='white')
     value_alteration_check_button.pack(side='top', padx=5, pady=10)
 
 
 ########################################################################################################################
-file_path = r"C:\Users\eliasp\Downloads\00000000000000011327_b6d78976b263aa402e43795d596fda48 (1).xml", r"C:\Users\eliasp\Downloads\00000000000000011327_b6d78976b263aa402e43795d596fda48 (1).xml"
-# chooseGuide(r'C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\tests\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0.xml'.replace('\\', '/'))
+# file_path = r"C:\Users\eliasp\Downloads\00000000000000011327_b6d78976b263aa402e43795d596fda48 (1).xml", r"C:\Users\eliasp\Downloads\00000000000000011327_b6d78976b263aa402e43795d596fda48 (1).xml"
+# chooseGuide(r'C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\Tests\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0.xml'.replace('\\', '/'))
 # doAlterationAction()
-# print(f'Variável: Quantidade de críticas lidas: {lines}')
+# print(f'Variável: Quantidade de críticas lidas: {line_number}')
 
-generateHashAndSave(file_path)
-
-
-
-# window = createGui()
-# window.mainloop()
+window = createGui()
+window.mainloop()
 
 

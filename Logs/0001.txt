@@ -1,2 +1,2 @@
 ---------------------------- LOG DE ALTERAÇÕES ----------------------------
-Número da conta:22222222 Procedimento:99999917 valor unitário:24.91 alterado para:10
+Número da conta:22222222 Procedimento:99999917 código do procedimento:99999917 alterado para:00111155

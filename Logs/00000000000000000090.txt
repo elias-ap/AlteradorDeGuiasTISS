@@ -1,3 +1,5 @@
 ---------------------------- LOG DE ALTERAÇÕES ----------------------------
 Procedimento:60015179 código do procedimento:60015179 alterado para:99999999
-Procedimento:0000145371 código do procedimento:0000145371 alterado para:1902962543
+Procedimento:60000635 código do procedimento:60000635 alterado para:00000001
+Procedimento:60001054 código do procedimento:60001054 alterado para:00000002
+Procedimento:60015160 código do procedimento:60015160 alterado para:00000003

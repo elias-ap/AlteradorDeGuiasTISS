@@ -1,3 +1,0 @@
-O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS\teste.exe
-C:\Users\eliasp\AppData\Local\Temp\_MEI163162\teste.py
-teste.py

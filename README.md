@@ -18,7 +18,7 @@ conforme os chamados: 2022040943, 2022110809 e 2022100571.
 
 O executável do software pode ser usado sem a necessidade de instalação
 de outros programas, porém, por medidas de segurança e versionamento, foi definido em seu código fonte
-que a aplicação só poderá ser executada em seu diretorio origem localizado na pasta compartilhada da rede:
+que a aplicação só poderá ser executada em seu diretório (origem) localizado na pasta compartilhada da rede:
 <br>
 <br>
 <a>O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS</a><br><br>
@@ -31,14 +31,14 @@ que a aplicação só poderá ser executada em seu diretorio origem localizado n
 raiz do software.</p>
 
 <i>Tabela 1º Aba - Alteração de dados</i> 
-<img src="resources\screenshot_excel_plan_data.png">
+<img src="Resources\Screenshots\excel_plan_data.png">
 
 <p>Essa tabela é lida para alteração dos dados de procedimentos como: código de procedimento, tipo de tabela e
 unidade de medida. Seus campos devem ser preenchidos de acordo com as colunas, caso o número da conta
 não seja especificado, todos os procedimentos com codigo correspondente serão alterados.</p>
-
 <i>Tabela 2º Aba - Alteração de valores</i> 
-<img src="resources\screenshot_excel_plan_value.png">
+<br>
+<img src="Resources\Screenshots\excel_plan_value.png">
 
 <p>Essa tabela é lida para alteração de valores dos procedimentos. Caso os valores informados possuam casas decimais,
 eles devem ser escritos com no máximo duas casas, separando o valor decimal com uma vírgula e se 
@@ -49,7 +49,7 @@ o número da conta não for especificado, todos os procedimentos com codigo corr
 <p>Ao abrir o programa verá a janela principal e alguns de seus botões:
 <br>
 <br>
-<img src="resources/screenshot_main_window.png">
+<img src="Resources\Screenshots\main_window.png">
 <br>
 <ul>
     <li><b>Carregar Guia:</b> abre uma janela para escolha de <b>uma</b> guia que deseja realizar alterações;</li>
@@ -63,23 +63,28 @@ o número da conta não for especificado, todos os procedimentos com codigo corr
 Após carregar uma guia é desbloqueado outras interações:
 <br>
 <br>
-<img src="resources/screenshot_after_choose_guide.png">
+<img src="Resources\Screenshots\after_choose_guide.png">
 <ul>
     <li><b>Alteração de dados:</b> define se a tabela de alteração de dados será lida e serão feitas as alterações;</li>
     <br>
-    <li><b>Alteração de valor:</b> define se a tabela de alteração de valores será lida e serão feitas as alterações</li>
+    <li><b>Alteração de valor:</b> define se a tabela de alteração de valores será lida e serão feitas as alterações;</li>
     <br>
     <li><b>Realizar alterações:</b> realiza as alterações de acordo com os dados lidos nas linhas da planilha;</li>
     <br>
     <li><b>Cancelar:</b> retorna a janela padrão e desfaz qualquer alteração feita na guia carregada.</li>
 </ul>
-Com o sucesso das alterações o botão de salvar guia ficará disponível:
-<img src="">
-
+Caso as alterações tenham sido realizadas com sucesso, o botão de salvar a guia ficará disponível:
+<br>
+<br>
+<img src="Resources\Screenshots\save_guide_after_alterations.png">
+<ul>
+<li><b>Salvar guia:</b> salva a guia, gerando um novo código hash e um arquivo texto das alterações feitas na pasta Logs (diretório raiz);</li>
+</ul>
 
 ## Observações
 <p>Para atender aos modelos de chamados citados no início e utilizar o software com máxima eficiência, muitas vezes será
-possível o uso do clipboard na captura das críticas informadas no chamado e o inserçao das mesmas na
-planilha de alterações, porém caso o formato não seja tabular, pode se utilzar o recurso no excel <b>Texto para Colunas</b>
-e extrair/formatar as críticas corretamente.</p>
-<p>A versão atual v.1.0 suporta alterações nas despesas de guias do tipo SP-SADT e Guia Resumo de Internação.</p>
+possível o uso do clipboard na captura das críticas informadas no chamado e a inserção das mesmas na
+planilha de alterações, porém caso o formato não seja tabular, pode se utilizar o recurso no excel <b>Texto para Colunas</b>
+juntamente com um editor de texto para extrair/formatar as críticas corretamente seguindo a estrutura da tabela.</p>
+<p>Como medida de segurança e versionamento, a aplicação <b>só poderá ser executada a partir do diretório raiz</b>.
+Entretanto, para facilitar a execução é possível utilizar atalho vinculado ao programa.</p>
