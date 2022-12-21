@@ -71,8 +71,8 @@
 </ans:procedimento>
 <ans:quantidadeExecutada>1</ans:quantidadeExecutada>
 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
-<ans:valorUnitario>704.62</ans:valorUnitario>
-<ans:valorTotal>704.62</ans:valorTotal>
+<ans:valorUnitario>10.00</ans:valorUnitario>
+<ans:valorTotal>10.00</ans:valorTotal>
 <ans:identEquipe>
 <ans:identificacaoEquipe>
 <ans:grauPart>13</ans:grauPart>
@@ -452,13 +452,13 @@
 <ans:horaFinal>00:00:00</ans:horaFinal>
 <ans:procedimento>
 <ans:codigoTabela>22</ans:codigoTabela>
-<ans:codigoProcedimento>10104020</ans:codigoProcedimento>
+<ans:codigoProcedimento>303030</ans:codigoProcedimento>
 <ans:descricaoProcedimento>ATENDIMENTO MEDICO DO INTENSIVISTA EM UTI GERAL OU PEDIATRIC</ans:descricaoProcedimento>
 </ans:procedimento>
 <ans:quantidadeExecutada>1</ans:quantidadeExecutada>
 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
-<ans:valorUnitario>704.62</ans:valorUnitario>
-<ans:valorTotal>704.62</ans:valorTotal>
+<ans:valorUnitario>10.00</ans:valorUnitario>
+<ans:valorTotal>10.00</ans:valorTotal>
 <ans:identEquipe>
 <ans:identificacaoEquipe>
 <ans:grauPart>13</ans:grauPart>
@@ -691,12 +691,12 @@
 </ans:procedimentoExecutado>
 </ans:procedimentosExecutados>
 <ans:valorTotal>
-<ans:valorProcedimentos>29779.71</ans:valorProcedimentos>
+<ans:valorProcedimentos>28390.47</ans:valorProcedimentos>
 <ans:valorDiarias>4494.78</ans:valorDiarias>
 <ans:valorTaxasAlugueis>14529.62</ans:valorTaxasAlugueis>
 <ans:valorMateriais>33952.16</ans:valorMateriais>
 <ans:valorMedicamentos>71610.72</ans:valorMedicamentos>
-<ans:valorTotalGeral>154366.99</ans:valorTotalGeral>
+<ans:valorTotalGeral>152977.75</ans:valorTotalGeral>
 </ans:valorTotal>
 <ans:outrasDespesas>
 <ans:despesa>
@@ -706,7 +706,7 @@
 <ans:horaInicial>00:00:00</ans:horaInicial>
 <ans:horaFinal>00:00:00</ans:horaFinal>
 <ans:codigoTabela>18</ans:codigoTabela>
-<ans:codigoProcedimento>99999999</ans:codigoProcedimento>
+<ans:codigoProcedimento>60015179</ans:codigoProcedimento>
 <ans:quantidadeExecutada>2</ans:quantidadeExecutada>
 <ans:unidadeMedida>036</ans:unidadeMedida>
 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
@@ -725,7 +725,7 @@
 <ans:horaInicial>00:00:00</ans:horaInicial>
 <ans:horaFinal>00:00:00</ans:horaFinal>
 <ans:codigoTabela>18</ans:codigoTabela>
-<ans:codigoProcedimento>00000001</ans:codigoProcedimento>
+<ans:codigoProcedimento>60000635</ans:codigoProcedimento>
 <ans:quantidadeExecutada>9</ans:quantidadeExecutada>
 <ans:unidadeMedida>036</ans:unidadeMedida>
 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
@@ -744,7 +744,7 @@
 <ans:horaInicial>00:00:00</ans:horaInicial>
 <ans:horaFinal>00:00:00</ans:horaFinal>
 <ans:codigoTabela>18</ans:codigoTabela>
-<ans:codigoProcedimento>00000002</ans:codigoProcedimento>
+<ans:codigoProcedimento>60001054</ans:codigoProcedimento>
 <ans:quantidadeExecutada>1</ans:quantidadeExecutada>
 <ans:unidadeMedida>036</ans:unidadeMedida>
 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
@@ -763,7 +763,7 @@
 <ans:horaInicial>00:00:00</ans:horaInicial>
 <ans:horaFinal>00:00:00</ans:horaFinal>
 <ans:codigoTabela>18</ans:codigoTabela>
-<ans:codigoProcedimento>00000003</ans:codigoProcedimento>
+<ans:codigoProcedimento>60015160</ans:codigoProcedimento>
 <ans:quantidadeExecutada>8</ans:quantidadeExecutada>
 <ans:unidadeMedida>036</ans:unidadeMedida>
 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
@@ -2882,6 +2882,6 @@
 </ans:loteGuias>
 </ans:prestadorParaOperadora>
 <ans:epilogo>
-<ans:hash>d28785f45904a129c0da8075941d1c81</ans:hash>
+<ans:hash>a92c8ed1c558b9e582bab836a2ba2e9f</ans:hash>
 </ans:epilogo>
 </ans:mensagemTISS>
