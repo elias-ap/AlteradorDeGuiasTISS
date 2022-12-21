@@ -6,7 +6,6 @@ import hashlib
 import customtkinter as ctk
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
-from Exceptions import Exceptions
 
 # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
 global ans_prefix
