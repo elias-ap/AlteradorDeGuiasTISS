@@ -179,7 +179,9 @@ def saveGuideAfterAlterations():
     new_hash_code = generateNewHashCode(all_guide_tags)
     root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
 
-    guide_name = os.path.basename(guide_path)
+    guide_name = os.path.basename(guide_path).split("_")[0]
+    path = guide_path.rsplit('\\', 1)[0]
+
     # SAVE ALTERED GUIDE
     output_path = r"C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\Tests\Output"
     tiss_guide.write(f'{output_path}\\{guide_name.split("_")[0]}_{new_hash_code}.xml', encoding="ISO-8859-1")
@@ -318,8 +320,7 @@ def doDataAlteration(guide_accounts):
     table_reviews = pd.read_excel("Sources/Teste.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
 
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
-    not_found_items = []
-    not_found_items.append(f'Número de contas na guia: {len(guide_accounts)}\n')
+    not_found_items = [f'Número de contas na guia: {len(guide_accounts)}\n']
     for review_line in table_reviews.values:
         global guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
         [guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
@@ -363,8 +364,8 @@ def doValueAlteration(guide_accounts):
     # READ WORKSHEET TABLE OF VALUE ALTERATION
     table_reviews = pd.read_excel("Sources/Teste.xlsx", sheet_name='2', dtype=str,
                                   keep_default_na=False)
-    not_found_items = []
-    not_found_items.append(f'Número de contas na guia: {len(guide_accounts)}\n')
+
+    not_found_items = [f'Número de contas na guia: {len(guide_accounts)}\n']
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
     for review_line in table_reviews.values:
         global guide_number, procedure_code, unitary_value, new_unitary_value
@@ -435,14 +436,18 @@ def generateHashAndSave():
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
     guides_paths = fd.askopenfilenames(filetypes=file_type)
     if guides_paths != '':
-        for guide in guides_paths:
-            tiss_guide = ET.parse(guide, parser=ET.XMLParser(encoding="ISO-8859-1"))
+        for guide_path in guides_paths:
+            tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
             root_tag = tiss_guide.getroot()
             root_tag_without_hash_text = removeHashTextFromGuide(root_tag)
             all_guide_tags = root_tag_without_hash_text.iter()
             new_hash_code = generateNewHashCode(all_guide_tags)
             root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
-            tiss_guide.write(guide.split('_')[0] + f'_{new_hash_code}.xml', encoding="ISO-8859-1")
+
+            guide_name = os.path.basename(guide_path).split("_")[0]
+            path = guide_path.rsplit('/', 1)[0]
+
+            tiss_guide.write(f'{path}/{guide_name}_{new_hash_code}.xml', encoding="ISO-8859-1")
 
         if len(guides_paths) > 1:
             mb.showinfo('Info', 'Arquivos salvos!')

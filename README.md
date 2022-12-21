@@ -10,7 +10,7 @@ de editores de texto como ++Notepad, bloco de notas, etc.
 ## Objetivo
 
 Realizar alterações de dados e/ou valores de forma automática após leitura de critícas informadas pelo requerente,
-conforme os chamados: 2022040943, 2022110809 e 2022100571.
+conforme os chamados: 2022040943, 2022110809, 2022100571, 2022120469.
 
 ## Como utilizar
 
@@ -82,6 +82,7 @@ Caso as alterações tenham sido realizadas com sucesso, o botão de salvar a gu
 </ul>
 
 ## Observações
+
 <p>Para atender aos modelos de chamados citados no início e utilizar o software com máxima eficiência, muitas vezes será
 possível o uso do clipboard na captura das críticas informadas no chamado e a inserção das mesmas na
 planilha de alterações, porém caso o formato não seja tabular, pode se utilizar o recurso no excel <b>Texto para Colunas</b>
