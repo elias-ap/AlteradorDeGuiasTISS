@@ -1,6 +1,6 @@
 # This Python file uses the following encoding: utf-8
 # IMPORTS
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as et
 import os
 import sys
 import pandas as pd
@@ -8,7 +8,6 @@ import hashlib
 import customtkinter as ctk
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
-from Exceptions import Exceptions
 
 
 def closeApplicationIfExecutionPathLocalIsNotOriginalDirPath():
@@ -57,7 +56,7 @@ def generateAlterationLog(altered_data, old, new):
 def alterTableType(specified_procedure_data):
     altered_data = 'tipo de tabela'
     tag_table_type = specified_procedure_data.find('ans:codigoTabela', ans_prefix)
-    if not ET.iselement(tag_table_type):
+    if not et.iselement(tag_table_type):
         tag_table_type = specified_procedure_data.find('ans:procedimento/ans:codigoTabela', ans_prefix)
 
     if new_table_type != '' and new_table_type != tag_table_type.text:
@@ -83,7 +82,7 @@ def alterUnityMeasure(specified_procedure_data):
 
 def alterProcedureCode(specified_procedure_data):
     tag_procedure_code = specified_procedure_data.find('ans:codigoProcedimento', ans_prefix)
-    if not ET.iselement(tag_procedure_code):
+    if not et.iselement(tag_procedure_code):
         tag_procedure_code = specified_procedure_data.find('ans:procedimento/ans:codigoProcedimento', ans_prefix)
 
     if new_procedure_code != '' and new_procedure_code != tag_procedure_code.text:
@@ -100,6 +99,7 @@ def recalculateAllTotalValues(difference):
     elif guide_type == 'HOSPITALIZATION':
         account_total_values_tag = guide_accounts[0].find('ans:valorTotal', ans_prefix)
         general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
+
     for total_value in account_total_values_tag:
         # IF TOTAL VALUE LARGER THAN DIFFERENCE VALUE ALTER
         if float(total_value.text) > float(difference):
@@ -209,7 +209,7 @@ def chooseGuide():
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
     guide_path = fd.askopenfilename(filetypes=file_type)
     if guide_path != '':
-        tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
+        tiss_guide = et.parse(guide_path, parser=et.XMLParser(encoding="ISO-8859-1"))
         root_tag = tiss_guide.getroot()
         waitingAlterationConfig()
 
@@ -246,23 +246,23 @@ def returnReviewLine(review_list, mode):
 
 def getExecutedProcedures(guide_account):
     account_executed_procedures = guide_account.find('ans:procedimentosExecutados', ans_prefix)
-    if ET.iselement(account_executed_procedures):
+    if et.iselement(account_executed_procedures):
         return account_executed_procedures
 
 
 def getExpenseProcedures(guide_account):
     account_expense_procedures = guide_account.find('ans:outrasDespesas', ans_prefix)
-    if ET.iselement(account_expense_procedures):
+    if et.iselement(account_expense_procedures):
         return account_expense_procedures
 
 
 def searchSpecifiedProcedureInExecutedAndExpensesProcedures(account_executed_procedures, account_expense_procedures):
-    if ET.iselement(account_executed_procedures):
+    if et.iselement(account_executed_procedures):
         specified_procedure = searchSpecifiedProcedureCodeInExecutedProcedures(account_executed_procedures)
         if specified_procedure is not None:
             return specified_procedure
 
-    if ET.iselement(account_expense_procedures):
+    if et.iselement(account_expense_procedures):
         specified_procedure = searchSpecifiedProcedureCodeInExpenseProcedures(account_expense_procedures)
         if specified_procedure is not None:
             return specified_procedure
@@ -273,27 +273,27 @@ def searchSpecifiedProcedureInExecutedAndExpensesProcedures(account_executed_pro
 
 def searchSpecifiedProcedureCodeInExecutedProcedures(account_executed_procedures):
     # IF ACCOUNT HAVE EXECUTED PROCEDURES TAG (procedimentosExecutados)
-    if ET.iselement(account_executed_procedures):
+    if et.iselement(account_executed_procedures):
         for data in account_executed_procedures:
             # SEARCH IN ACCOUNT EXECUTED PROCEDURES TAG FOR SPECIFIED PROCEDURE CODE
             executed_procedure = data.find(f'ans:procedimento[ans:codigoProcedimento="{procedure_code}"]..', ans_prefix)
 
             # IF ACCOUNT HAVE THE SPECIFIED PROCEDURE GET HIS DATA
-            if ET.iselement(executed_procedure):
+            if et.iselement(executed_procedure):
                 executed_procedure_data = executed_procedure
                 return executed_procedure_data
 
 
 def searchSpecifiedProcedureCodeInExpenseProcedures(account_expense_procedures):
     # IF ACCOUNT HAVE EXPENSES PROCEDURES TAG (outrasDespesas)
-    if ET.iselement(account_expense_procedures):
+    if et.iselement(account_expense_procedures):
         for data in account_expense_procedures:
             # SEARCH IN ACCOUNT EXPENSE PROCEDURES TAG FOR SPECIFIED PROCEDURE CODE
             expense_procedure = data.find(f'ans:servicosExecutados[ans:codigoProcedimento="{procedure_code}"]..',
                                           ans_prefix)
 
             # IF ACCOUNT HAVE THE SPECIFIED PROCEDURE GET HIS DATA
-            if ET.iselement(expense_procedure):
+            if et.iselement(expense_procedure):
                 expense_procedure_data = expense_procedure.find('ans:servicosExecutados', ans_prefix)
                 return expense_procedure_data
 
@@ -301,7 +301,7 @@ def searchSpecifiedProcedureCodeInExpenseProcedures(account_expense_procedures):
 def getSpecifiedProcedureData(guide_account):
     if guide_type == 'SADT' and guide_number != '':
         guide_account = guide_account.find(f'ans:cabecalhoGuia[ans:numeroGuiaPrestador="{guide_number}"]..', ans_prefix)
-        if ET.iselement(guide_account):
+        if et.iselement(guide_account):
             account_executed_procedures = getExecutedProcedures(guide_account)
             account_expense_procedures = getExpenseProcedures(guide_account)
             specified_procedure = searchSpecifiedProcedureInExecutedAndExpensesProcedures(account_executed_procedures,
@@ -445,7 +445,7 @@ def generateHashAndSave():
     guides_paths = fd.askopenfilenames(filetypes=file_type)
     if guides_paths != '':
         for guide_path in guides_paths:
-            tiss_guide = ET.parse(guide_path, parser=ET.XMLParser(encoding="ISO-8859-1"))
+            tiss_guide = et.parse(guide_path, parser=et.XMLParser(encoding="ISO-8859-1"))
             root_tag = tiss_guide.getroot()
             root_tag_without_hash_text = removeHashTextFromGuide(root_tag)
             all_guide_tags = root_tag_without_hash_text.iter()

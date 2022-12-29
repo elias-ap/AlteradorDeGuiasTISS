@@ -1,3 +1,7 @@
 ---------------------------- LOG DE ALTERAÇÕES ----------------------------
 Procedimento:10104020 valor unitário:704.62 alterado para:10
 Procedimento:303030 valor unitário:704.62 alterado para:10
+Procedimento:10104020 tipo de tabela:22 alterado para:00
+Procedimento:10104020 código do procedimento:10104020 alterado para:125648978
+Procedimento:10104020 tipo de tabela:22 alterado para:00
+Procedimento:10104020 código do procedimento:10104020 alterado para:125648978

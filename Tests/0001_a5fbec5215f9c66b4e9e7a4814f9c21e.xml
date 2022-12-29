@@ -89,7 +89,7 @@
                 <ans:horaInicial>08:20:00</ans:horaInicial>
                 <ans:horaFinal>08:20:00</ans:horaFinal>
                 <ans:codigoTabela>18</ans:codigoTabela>
-                <ans:codigoProcedimento>60023406</ans:codigoProcedimento>
+                <ans:codigoProcedimento>99999917</ans:codigoProcedimento>
                 <ans:quantidadeExecutada>1</ans:quantidadeExecutada>
                 <ans:unidadeMedida>036</ans:unidadeMedida>
                 <ans:reducaoAcrescimo>1.00</ans:reducaoAcrescimo>
@@ -231,7 +231,7 @@
               </ans:servicosExecutados>
             </ans:despesa>
           </ans:outrasDespesas>
-          <ans:observacao>Esta Guia destina-se exclusivamente a documentar a cobranÃ§a de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ans:observacao>
+          <ans:observacao>Esta Guia destina-se exclusivamente a documentar a cobrança de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ans:observacao>
           <ans:valorTotal>
             <ans:valorTaxasAlugueis>162.73</ans:valorTaxasAlugueis>
             <ans:valorMateriais>415.79</ans:valorMateriais>
@@ -451,7 +451,7 @@
               </ans:servicosExecutados>
             </ans:despesa>
           </ans:outrasDespesas>
-          <ans:observacao>Esta Guia destina-se exclusivamente a documentar a cobranÃ§a de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ans:observacao>
+          <ans:observacao>Esta Guia destina-se exclusivamente a documentar a cobrança de Taxas e Itens de Consumo discriminados em Guia de Outras Despesas Anexa</ans:observacao>
           <ans:valorTotal>
             <ans:valorTaxasAlugueis>160.77</ans:valorTaxasAlugueis>
             <ans:valorMateriais>23.00</ans:valorMateriais>
