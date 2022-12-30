@@ -97,7 +97,7 @@ def recalculateAllTotalValues(difference):
         account_total_values_tag = account.find('ans:valorTotal', ans_prefix)
         general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
     elif guide_type == 'HOSPITALIZATION':
-        account_total_values_tag = account.find('ans:valorTotal', ans_prefix)
+        account_total_values_tag = guide_accounts[0].find('ans:valorTotal', ans_prefix)
         general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
 
     for total_value in account_total_values_tag:
@@ -358,9 +358,7 @@ def doDataAlteration(guide_accounts):
                             control_var += 1
 
         elif guide_type == 'HOSPITALIZATION':
-            global guide_account
-            guide_account = guide_accounts[0]
-            specified_procedure_data = getSpecifiedProcedureData(guide_account)
+            specified_procedure_data = getSpecifiedProcedureData(guide_accounts[0])
             if specified_procedure_data is not None:
                 alterTableType(specified_procedure_data)
                 alterUnityMeasure(specified_procedure_data)
@@ -401,8 +399,7 @@ def doValueAlteration(guide_accounts):
                             control_var += 1
 
         elif guide_type == 'HOSPITALIZATION':
-            guide_account = guide_accounts[0]
-            specified_procedure_data = getSpecifiedProcedureData(guide_account)
+            specified_procedure_data = getSpecifiedProcedureData(guide_accounts[0])
             if specified_procedure_data is not None:
                 alterValues(specified_procedure_data)
                 control_var += 1
@@ -410,7 +407,7 @@ def doValueAlteration(guide_accounts):
 
 
 def doAlterationAction():
-    global control_var
+    global control_var, guide_accounts
     data_alteration_check = data_alteration_check_button.get()
     value_alteration_check = value_alteration_check_button.get()
     guide_accounts = getGuideType()

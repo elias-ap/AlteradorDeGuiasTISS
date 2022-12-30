@@ -12,7 +12,7 @@ from tkinter import messagebox as mb
 
 def closeApplicationIfExecutionPathLocalIsNotOriginalDirPath():
     # right_execution_path = r"O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS"
-    right_execution_path = r"C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file"
+    right_execution_path = r"C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file"
     current_execution_path = os.getcwd()
     if current_execution_path != right_execution_path:
         mb.showwarning('Erro', f'A aplicação só pode ser executada a partir do diretório original:\n{right_execution_path}')
@@ -99,6 +99,7 @@ def recalculateAllTotalValues(difference):
     elif guide_type == 'HOSPITALIZATION':
         account_total_values_tag = account.find('ans:valorTotal', ans_prefix)
         general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
+
     for total_value in account_total_values_tag:
         # IF TOTAL VALUE LARGER THAN DIFFERENCE VALUE ALTER
         if float(total_value.text) > float(difference):
@@ -409,7 +410,7 @@ def doValueAlteration(guide_accounts):
 
 
 def doAlterationAction():
-    global control_var
+    global control_var, guide_accounts
     data_alteration_check = data_alteration_check_button.get()
     value_alteration_check = value_alteration_check_button.get()
     guide_accounts = getGuideType()
