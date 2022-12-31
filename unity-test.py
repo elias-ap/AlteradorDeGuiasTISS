@@ -1,4 +1,5 @@
 # IMPORTS
+import typing
 import xml.etree.ElementTree as Et
 import os
 import pandas as pd
@@ -8,7 +9,6 @@ from tkinter import filedialog as fd
 from tkinter import messagebox as mb
 
 # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
-global ans_prefix
 ans_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}
 
 
@@ -16,11 +16,11 @@ def generateHashAndSave():
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
     guides_paths = fd.askopenfilenames(filetypes=file_type)
     if guides_paths != '':
-        for guide_path in guides_paths:
+        for path in guides_paths:
             # OPEN GUIDE
-            root_tag = readXML(guide_path)
+            root_tag = getRootTagFromXML(path)
             generateHash(root_tag)
-            saveFile(guide_path)
+            saveFile(path)
 
         if len(guides_paths) > 1:
             mb.showinfo('Info', 'Arquivos salvos!')
@@ -35,20 +35,20 @@ def openWorksheet():
     os.startfile(f"{path}")
 
 
-def openGuide(path):
+def openGuide(): # path: str
     global guide_path, root_tag
-    guide_path = path
-    # file_type = (('XML files', '*.xml'), ('All files', '*.*'))
-    # guide_path = fd.askopenfilename(filetypes=file_type)
+    # guide_path = path
+    file_type = (('XML files', '*.xml'), ('All files', '*.*'))
+    guide_path = fd.askopenfilename(filetypes=file_type)
     if os.path.isfile(guide_path):
-        root_tag = readXML(guide_path)
-        # waitingAlterationConfig()
+        root_tag = getRootTagFromXML(guide_path)
+        waitingAlterationConfig()
 
     else:
         mb.showwarning(title='Erro', message='A guia não foi escolhida!')
 
 
-def readXML(guide_path):
+def getRootTagFromXML(guide_path: str):
     global guide_file
     guide_file = Et.parse(guide_path, parser=Et.XMLParser(encoding="ISO-8859-1"))
     root_tag = guide_file.getroot()
@@ -84,8 +84,8 @@ def doAlterationAction():
     global not_found_items, alteration_log_list, control_var
     control_var = 0
     alteration_log_list = []
-    data_alteration_check = 1 # data_alteration_check_button.get()
-    value_alteration_check = 0  # value_alteration_check_button.get()
+    data_alteration_check = 0  # data_alteration_check_button.get()
+    value_alteration_check = 1  # value_alteration_check_button.get()
     guide_accounts = getGuideType()
     not_found_items = [f'Número de contas na guia: {len(guide_accounts)}\n']
 
@@ -100,10 +100,11 @@ def doAlterationAction():
 
     elif control_var > 0:
         print(f'Alterou:{control_var}')
-        # waitSave()
-        # global saveGuide_button
-        # saveGuide_button = ctk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuideAfterAlterations())
-        # saveGuide_button.pack(side='bottom', pady=5, padx=5)
+        waitSave()
+        global saveGuide_button
+        saveGuide_button = ctk.CTkButton(frame, text='Salvar Guia', command=lambda: saveGuideAfterAlterations())
+        saveGuide_button.pack(side='bottom', pady=5, padx=5)
+
     else:
         mb.showinfo('Atenção', 'Não foi realizada nenhuma alteração.')
 
@@ -126,7 +127,7 @@ def getGuideType():
         return accounts
 
 
-def doDataAlteration(guide_accounts):
+def doDataAlteration(guide_accounts: list[Et.Element]):
     # READ WORKSHEET TABLE OF DATA ALTERATION
     table_reviews = pd.read_excel("Sources/Teste.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
 
@@ -145,7 +146,7 @@ def doDataAlteration(guide_accounts):
                     wasAltered()
 
 
-def prepareDataAlteration(review_line):
+def prepareDataAlteration(review_line: list):
     global guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
     [guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
      new_unity_measure] = returnReviewLine(review_line, 'data')
@@ -154,7 +155,7 @@ def prepareDataAlteration(review_line):
         new_table_type = str(new_table_type).replace('0', '00')
 
 
-def returnReviewLine(review_list, mode):
+def returnReviewLine(review_list: list, mode: str):
     # IF DEFINED FOR DOING DATA ALTERATIONS:
     if mode == 'data':
         return review_list[0], review_list[1], review_list[2], review_list[3], review_list[4], review_list[5], \
@@ -165,7 +166,7 @@ def returnReviewLine(review_list, mode):
         return review_list[0], review_list[1], review_list[2].replace(',', '.'), review_list[3].replace(',', '.')
 
 
-def getSpecifiedProcedureData(guide_account):
+def getSpecifiedProcedureData(guide_account: Et.Element):
     if guide_type == 'SADT' and guide_number != '':
         guide_account = guide_account.find(f'ans:cabecalhoGuia[ans:numeroGuiaPrestador="{guide_number}"]..', ans_prefix)
         if Et.iselement(guide_account):
@@ -188,33 +189,34 @@ def getSpecifiedProcedureData(guide_account):
         if specified_procedure is not None:
             return specified_procedure
         else:
-            message = f'Procedimento: {procedure_code} não foi encontrado na conta: {guide_number}\n'
+            account_number = guide_account.find(f'ans:cabecalhoGuia/ans:numeroGuiaPrestador', ans_prefix).text
+            message = f'Procedimento: {procedure_code} não foi encontrado na conta: {account_number}\n'
             not_found_items.append(message)
 
 
-def getExecutedProcedures(guide_account):
+def getExecutedProcedures(guide_account: Et.Element):
     account_executed_procedures = guide_account.find('ans:procedimentosExecutados', ans_prefix)
     return account_executed_procedures
 
 
-def getExpenseProcedures(guide_account):
+def getExpenseProcedures(guide_account: Et.Element):
     account_expense_procedures = guide_account.find('ans:outrasDespesas', ans_prefix)
     return account_expense_procedures
 
 
-def searchSpecifiedProcedureInExecutedOrExpensesProcedures(account_executed_procedures, account_expense_procedures):
-    if Et.iselement(account_executed_procedures):
-        specified_procedure = searchSpecifiedProcedureCodeInExecutedProcedures(account_executed_procedures)
+def searchSpecifiedProcedureInExecutedOrExpensesProcedures(executed_procedures: Et.Element, expense_procedures: Et.Element):
+    if Et.iselement(executed_procedures):
+        specified_procedure = searchSpecifiedProcedureCodeInExecutedProcedures(executed_procedures)
         if len(specified_procedure) > 0:
             return specified_procedure
 
-    if Et.iselement(account_expense_procedures):
-        specified_procedure = searchSpecifiedProcedureCodeInExpenseProcedures(account_expense_procedures)
+    if Et.iselement(expense_procedures):
+        specified_procedure = searchSpecifiedProcedureCodeInExpenseProcedures(expense_procedures)
         if len(specified_procedure) > 0:
             return specified_procedure
 
 
-def searchSpecifiedProcedureCodeInExecutedProcedures(procedures):
+def searchSpecifiedProcedureCodeInExecutedProcedures(procedures: Et.Element):
     # SEARCH IN ALL EXECUTED PROCEDURES FOR THE SPECIFIED PROCEDURE CODE
     procedure_data = procedures.iterfind(f'.//ans:procedimento[ans:codigoProcedimento="{procedure_code}"]..', ans_prefix)
     procedure_data = list(procedure_data)
@@ -228,7 +230,7 @@ def searchSpecifiedProcedureCodeInExpenseProcedures(procedures):
     return procedure_data
 
 
-def alterTableType(specified_procedure_data):
+def alterTableType(specified_procedure_data: Et.ElementTree):
     tag_table_type = specified_procedure_data.find('ans:codigoTabela', ans_prefix)
 
     if not Et.iselement(tag_table_type):
@@ -240,7 +242,7 @@ def alterTableType(specified_procedure_data):
         prepareAlterationLogLines(altered_data, table_type, new_table_type)
 
 
-def alterUnityMeasure(specified_procedure_data):
+def alterUnityMeasure(specified_procedure_data: Et.ElementTree):
     tag_unity_measure = specified_procedure_data.find('ans:unidadeMedida', ans_prefix)
 
     if new_unity_measure != '' and new_unity_measure != tag_unity_measure.text:
@@ -263,7 +265,7 @@ def alterProcedureCode(specified_procedure_data):
         prepareAlterationLogLines(altered_data, procedure_code, new_procedure_code)
 
 
-def prepareAlterationLogLines(altered_data, old, new):
+def prepareAlterationLogLines(altered_data: str, old: str, new: str):
     if guide_number != '':
         log_line = f'Número da conta:{guide_number} Procedimento:{procedure_code} {altered_data}:{old} alterado para:{new} '
         alteration_log_list.append(log_line)
@@ -293,17 +295,14 @@ def doValueAlteration(guide_accounts):
                 for procedure in specified_procedure_data:
                     alterValues(procedure, account)
                     wasAltered()
-            else:
-                message = f'Procedimento: {procedure_code} não foi encontrado na conta: {guide_number};\n'
-                not_found_items.append(message)
 
 
-def prepareValueAlteration(review_line):
+def prepareValueAlteration(review_line: list):
     global guide_number, procedure_code, unitary_value, new_unitary_value
     [guide_number, procedure_code, unitary_value, new_unitary_value] = returnReviewLine(review_line, 'values')
 
 
-def alterValues(specified_procedure_data, account):
+def alterValues(specified_procedure_data: Et.ElementTree, account: Et.ElementTree):
     # GET PROCEDURE UNITARY VALUE
     unitary_value_tag = specified_procedure_data.find('ans:valorUnitario', ans_prefix)
 
@@ -333,7 +332,7 @@ def alterValues(specified_procedure_data, account):
         recalculateAllTotalValues(value_difference, account)
 
 
-def recalculateAllTotalValues(difference, account):
+def recalculateAllTotalValues(difference: str, account: Et.ElementTree):
     # GET ACCOUNT TOTAL VALUES TAGS
     account_total_values_tag = account.find('ans:valorTotal', ans_prefix)
     general_total_values_tag = account_total_values_tag.find('ans:valorTotalGeral', ans_prefix)
@@ -355,16 +354,19 @@ def waitSave():
 def saveGuideAfterAlterations():
     # GENERATE NEW HASH
     generateHash(root_tag)
+
     # SAVE ALTERED GUIDE
     saveFile(guide_path)
+
     # GET GUIDE NAME
     guide_name = os.path.basename(guide_path).split("_")[0]
     createLogFile(guide_name)
-    # mb.showinfo(message='Arquivo salvo!')
-    # cancelAlteration()
+
+    mb.showinfo(message='Arquivo salvo!')
+    cancelAlteration()
 
 
-def generateHash(root_tag):
+def generateHash(root_tag: Et.Element):
     global new_hash_code
     root_tag_without_hash_text = removeHashTextFromGuide(root_tag)
     all_guide_tags = root_tag_without_hash_text.iter()
@@ -372,12 +374,12 @@ def generateHash(root_tag):
     root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = new_hash_code
 
 
-def removeHashTextFromGuide(guide_root_tag):
+def removeHashTextFromGuide(guide_root_tag: Et.Element):
     guide_root_tag.find('ans:epilogo', ans_prefix).find('ans:hash', ans_prefix).text = ''
     return guide_root_tag
 
 
-def generateNewHashCode(all_tags):
+def generateNewHashCode(all_tags: typing.Generator):
     tags_texts = []
     unique_line_string = ''
     # FOR EVERY TAG REMOVE LINE BREAKS
@@ -394,14 +396,14 @@ def generateNewHashCode(all_tags):
     return new_code
 
 
-def saveFile(guide_path):
+def saveFile(guide_path: str):
     guide_name = os.path.basename(guide_path).split("_")[0]
     path = guide_path.rsplit('/', 1)[0]
     output_path = r"C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\Tests\Output"
     guide_file.write(f'{output_path}/{guide_name}_{new_hash_code}.xml', encoding="ISO-8859-1")
 
 
-def createLogFile(guide_name):
+def createLogFile(guide_name: str):
     # GET ABSOLUTE PATH OF LOGS FOLDER
     log_folder_path = os.path.abspath(r'Logs')
 
@@ -422,7 +424,7 @@ def createLogFile(guide_name):
     log_file.close()
 
 
-def checkIfExistsLogFile(guide_name, log_folder_path):
+def checkIfExistsLogFile(guide_name: str, log_folder_path: str):
     if os.path.isfile(f'{log_folder_path}/{guide_name}.txt'):
         log_file = open(f'{log_folder_path}/{guide_name}.txt', 'a')
 
@@ -432,10 +434,10 @@ def checkIfExistsLogFile(guide_name, log_folder_path):
     return log_file
 
 
-def showNotFoundItems(not_found_items):
-    if len(not_found_items) > 1:
+def showNotFoundItems(items: list):
+    if len(items) > 1:
         message = ''
-        for item in not_found_items:
+        for item in items:
             message += item
         mb.showinfo('Info', message)
 
@@ -480,28 +482,26 @@ def createRelativeButtons():
 
 
 def cancelAlteration():
-    global control_var
     # REDEFINE BUTTONS
-    if control_var == 0:
+    if 'control_var' not in globals():
         for button in (alteration_button, cancel_button, data_alteration_check_button, value_alteration_check_button,
                        check_button_information):
             button.destroy()
 
-    else:
+    elif control_var > 0:
         for button in (saveGuide_button, cancel_button):
             button.destroy()
 
-    control_var = 0
     createRelativeButtons()
 
 
 ########################################################################################################################
 # file_path = r"C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\Tests\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0.xml"
 file_path = r"C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\Tests\0001_a5fbec5215f9c66b4e9e7a4814f9c21e.xml"
-openGuide(file_path)
-doAlterationAction()
-saveGuideAfterAlterations()
+# openGuide()
+# doAlterationAction()
+# saveGuideAfterAlterations()
 # generateHashAndSave()
 
-# window = createGui()
-# window.mainloop()
+window = createGui()
+window.mainloop()
