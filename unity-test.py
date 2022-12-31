@@ -35,7 +35,7 @@ def openWorksheet():
     os.startfile(f"{path}")
 
 
-def openGuide(): # path: str
+def openGuide():  # path: str
     global guide_path, root_tag
     # guide_path = path
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
