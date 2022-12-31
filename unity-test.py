@@ -84,8 +84,8 @@ def doAlterationAction():
     global not_found_items, alteration_log_list, control_var
     control_var = 0
     alteration_log_list = []
-    data_alteration_check = 0  # data_alteration_check_button.get()
-    value_alteration_check = 1  # value_alteration_check_button.get()
+    data_alteration_check = data_alteration_check_button.get()
+    value_alteration_check = value_alteration_check_button.get()
     guide_accounts = getGuideType()
     not_found_items = [f'Número de contas na guia: {len(guide_accounts)}\n']
 

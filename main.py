@@ -13,17 +13,13 @@ from tkinter import messagebox as mb
 # SET TAG PREFIX USED AS DEFAULT BY TISS GUIDES
 ans_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}
 
-
-def closeApplicationIfExecutionPathLocalIsNotOriginalDirPath():
-    right_execution_path = r"O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS"
-    current_execution_path = os.getcwd()
-    if current_execution_path != right_execution_path:
-        mb.showwarning('Erro',
-                       f'A aplicação só pode ser executada a partir do diretório original:\n{right_execution_path}')
-        sys.exit()
-
-
-closeApplicationIfExecutionPathLocalIsNotOriginalDirPath()
+# CLOSE APPLICATION IF NOT IN RIGHT EXECUTION PATH
+right_execution_path = r"O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS"
+current_execution_path = os.getcwd()
+if current_execution_path != right_execution_path:
+    mb.showwarning('Erro',
+                   f'A aplicação só pode ser executada a partir do diretório original:\n{right_execution_path}')
+    sys.exit()
 
 
 def generateHashAndSave():
