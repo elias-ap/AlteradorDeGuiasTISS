@@ -2,26 +2,22 @@
  
 ## Prefácio
 
-A ideia inicial desse projeto nasceu da necessidade de uma ferramenta
-capaz de realizar alterações de dados em guias TISS (arquivos XML) de forma automatizada, com propósito
-de otimizar o tempo gasto para essa tarefa que até então era feita de forma manual através
-de editores de texto como ++Notepad, bloco de notas, etc.
+<p>A ideia inicial desse projeto nasceu da necessidade de uma ferramenta capaz de realizar alterações de 
+dados eletrônicos em guias médicas (arquivos XML) no padrão TISS definido pela ANS de forma automatizada, com propósito 
+de otimizar o tempo gasto para essa tarefa que até então era feita de forma manual através de editores de texto como 
+++Notepad, bloco de notas, etc.</p>
 
 ## Objetivo
 
-Realizar alterações de dados e/ou valores de forma automática após leitura de critícas informadas pelo requerente,
-conforme os chamados: 2022040943, 2022110809, 2022100571, 2022120469.
+<p>Realizar alterações de dados dentro do arquivo XML de acordo com novos dados informados em uma planilha XLSX.</p>
 
-## Como utilizar
+### Localização e uso do software
 
-### Localização do software
+<p>O executável do software pode ser usado sem a necessidade de instalação  de outros programas, porém, por medidas de 
+segurança e versionamento, foi definido em seu código fonte que a aplicação só poderá ser executada em seu 
+diretório (origem) localizado na pasta compartilhada da rede:</p>
 
-O executável do software pode ser usado sem a necessidade de instalação
-de outros programas, porém, por medidas de segurança e versionamento, foi definido em seu código fonte
-que a aplicação só poderá ser executada em seu diretório (origem) localizado na pasta compartilhada da rede:
-<br>
-<br>
-<a>O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS</a><br><br>
+<a>O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS</a>
 
 ### Funcionalidades
 
@@ -36,8 +32,8 @@ raiz do software.</p>
 <p>Essa tabela é lida para alteração dos dados de procedimentos como: código de procedimento, tipo de tabela e
 unidade de medida. Seus campos devem ser preenchidos de acordo com as colunas, caso o número da conta
 não seja especificado, todos os procedimentos com codigo correspondente serão alterados.</p>
-<i>Tabela 2º Aba - Alteração de valores</i> 
-<br>
+
+<i>Tabela 2º Aba - Alteração de valores</i>
 <img src="Resources\Screenshots\excel_plan_value.png">
 
 <p>Essa tabela é lida para alteração de valores dos procedimentos. Caso os valores informados possuam casas decimais,
@@ -46,46 +42,41 @@ o número da conta não for especificado, todos os procedimentos com codigo corr
 
 #### Botões
 
-<p>Ao abrir o programa verá a janela principal e alguns de seus botões:
-<br>
-<br>
+<p>Ao abrir o programa verá a janela principal e alguns de seus botões:</p>
+
 <img src="Resources\Screenshots\main_window.png">
-<br>
 <ul>
-    <li><b>Carregar Guia:</b> abre uma janela para escolha de <b>uma</b> guia que deseja realizar alterações;</li>
+    <li><b>Carregar guia:</b> abre uma janela para escolha de <b>uma</b> guia que deseja realizar alterações;</li>
     <br>
     <li><b>Gerar hash:</b> abre uma janela para escolha de <b>uma ou mais</b> guias, após a escolha 
     automaticamente gera um novo código hash e salva a guia no diretório de origem do arquivo;</li>
     <br>
-    <li><b>Abrir planilha:</b> abre a planilha de alterações no diretório raiz.</li>
+    <li><b>Abrir planilha:</b> abre a planilha de alterações no diretório raiz;</li>
     <br>
 </ul>
-Após carregar uma guia é desbloqueado outras interações:
-<br>
-<br>
+
+<p>Após carregar uma guia é desbloqueado outras interações:</p>
+
 <img src="Resources\Screenshots\after_choose_guide.png">
 <ul>
-    <li><b>Alteração de dados:</b> define se a tabela de alteração de dados será lida e serão feitas as alterações;</li>
+    <li><b>Alteração de dados:</b> define se a tabela de alteração de dados será lida e serão feitas as alterações nos dados;</li>
     <br>
-    <li><b>Alteração de valor:</b> define se a tabela de alteração de valores será lida e serão feitas as alterações;</li>
+    <li><b>Alteração de valor:</b> define se a tabela de alteração de valores será lida e serão feitas as alterações nos valores;</li>
     <br>
     <li><b>Realizar alterações:</b> realiza as alterações de acordo com os dados lidos nas linhas da planilha;</li>
     <br>
-    <li><b>Cancelar:</b> retorna a janela padrão e desfaz qualquer alteração feita na guia carregada.</li>
+    <li><b>Cancelar:</b> retorna a janela padrão e desfaz qualquer alteração feita na guia carregada;</li>
 </ul>
-Caso as alterações tenham sido realizadas com sucesso, o botão de salvar a guia ficará disponível:
-<br>
-<br>
+
+<p>Caso as alterações tenham sido realizadas com sucesso, o botão de salvar a guia ficará disponível:</p>
+
 <img src="Resources\Screenshots\save_guide_after_alterations.png">
 <ul>
-<li><b>Salvar guia:</b> salva a guia, gerando um novo código hash e um arquivo texto das alterações feitas na pasta Logs (diretório raiz);</li>
+<li><b>Salvar guia:</b> salva a guia, gerando um novo código hash e um arquivo texto das alterações realizadas
+na pasta Logs (diretório raiz);</li>
 </ul>
 
 ## Observações
 
-<p>Para atender aos modelos de chamados citados no início e utilizar o software com máxima eficiência, muitas vezes será
-possível o uso do clipboard na captura das críticas informadas no chamado e a inserção das mesmas na
-planilha de alterações, porém caso o formato não seja tabular, pode se utilizar o recurso no excel <b>Texto para Colunas</b>
-juntamente com um editor de texto para extrair/formatar as críticas corretamente seguindo a estrutura da tabela.</p>
 <p>Como medida de segurança e versionamento, a aplicação <b>só poderá ser executada a partir do diretório raiz</b>.
-Entretanto, para facilitar a execução é possível utilizar atalho vinculado ao programa.</p>
+Entretanto, para facilitar a execução é possível criar um atalho vinculado ao programa.</p>
