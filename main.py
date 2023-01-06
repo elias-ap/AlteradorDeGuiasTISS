@@ -45,9 +45,8 @@ def openWorksheet():
     os.startfile(f"{path}")
 
 
-def openGuide():  # path: str
+def openGuide():
     global guide_path, root_tag
-    # guide_path = path
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
     guide_path = fd.askopenfilename(filetypes=file_type)
     if os.path.isfile(guide_path):
@@ -151,14 +150,17 @@ def doDataAlteration(guide_accounts: list[Et.Element]):
                 for procedure in specified_procedure_data:
                     alterTableType(procedure)
                     alterUnityMeasure(procedure)
+                    alterParticipationDegree(procedure)
+                    alterDespenseCode(procedure)
                     alterProcedureCode(procedure)
                     wasAltered()
 
 
 def prepareDataAlteration(review_line: list):
-    global guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure, new_unity_measure
-    [guide_number, procedure_code, new_procedure_code, table_type, new_table_type, unity_measure,
-     new_unity_measure] = returnReviewLine(review_line, 'data')
+    global guide_number, procedure_code, new_procedure_code, table_type, new_table_type, participation_degree,\
+        new_participation_degree, despense_code, new_despense_code,  unity_measure, new_unity_measure
+    [guide_number, procedure_code, new_procedure_code, table_type, new_table_type, participation_degree,\
+        new_participation_degree, despense_code, new_despense_code,  unity_measure, new_unity_measure] = returnReviewLine(review_line, 'data')
 
     if new_table_type == '0':
         new_table_type = str(new_table_type).replace('0', '00')
@@ -168,7 +170,7 @@ def returnReviewLine(review_list: list, mode: str):
     # IF DEFINED FOR DOING DATA ALTERATIONS:
     if mode == 'data':
         return review_list[0], review_list[1], review_list[2], review_list[3], review_list[4], review_list[5], \
-               review_list[6]
+               review_list[6], review_list[7], review_list[8], review_list[9], review_list[10]
 
     # IF DEFINED FOR DOING VALUE ALTERATIONS:
     if mode == 'values':
@@ -234,27 +236,27 @@ def searchSpecifiedProcedureCodeInExecutedProcedures(procedures: Et.Element):
 
 def searchSpecifiedProcedureCodeInExpenseProcedures(procedures):
     # SEARCH IN ALL EXECUTED PROCEDURES FOR THE SPECIFIED PROCEDURE CODE
-    procedure_data = procedures.iterfind(f'.//ans:servicosExecutados[ans:codigoProcedimento="{procedure_code}"].', ans_prefix)
+    procedure_data = procedures.iterfind(f'.//ans:servicosExecutados[ans:codigoProcedimento="{procedure_code}"]..', ans_prefix)
     procedure_data = list(procedure_data)
     return procedure_data
 
 
 def alterTableType(specified_procedure_data: Et.ElementTree):
-    tag_table_type = specified_procedure_data.find('ans:codigoTabela', ans_prefix)
+    tag_table_type = specified_procedure_data.find('.//ans:codigoTabela', ans_prefix)
 
     if not Et.iselement(tag_table_type):
         tag_table_type = specified_procedure_data.find('ans:procedimento/ans:codigoTabela', ans_prefix)
 
-    if new_table_type != '' and new_table_type != tag_table_type.text:
+    if Et.iselement(tag_table_type) and new_table_type != '' and new_table_type != tag_table_type.text:
         tag_table_type.text = str(new_table_type)
         altered_data = 'tipo de tabela'
         prepareAlterationLogLines(altered_data, table_type, new_table_type)
 
 
 def alterUnityMeasure(specified_procedure_data: Et.ElementTree):
-    tag_unity_measure = specified_procedure_data.find('ans:unidadeMedida', ans_prefix)
+    tag_unity_measure = specified_procedure_data.find('.//ans:unidadeMedida', ans_prefix)
 
-    if new_unity_measure != '' and new_unity_measure != tag_unity_measure.text:
+    if Et.iselement(tag_unity_measure) and new_unity_measure != '' and new_unity_measure != tag_unity_measure.text:
         tag_unity_measure.text = tag_unity_measure.text.replace(str(unity_measure), str(new_unity_measure)).rjust(
             len(tag_unity_measure.text), '0')
 
@@ -262,11 +264,36 @@ def alterUnityMeasure(specified_procedure_data: Et.ElementTree):
         prepareAlterationLogLines(altered_data, unity_measure, new_unity_measure)
 
 
+def alterParticipationDegree(specified_procedure_data):
+    tag_participation_degree = specified_procedure_data.find('ans:identEquipe//ans:grauPart', ans_prefix)
+
+    if Et.iselement(tag_participation_degree) and new_participation_degree != '' and new_participation_degree != tag_participation_degree.text:
+        tag_participation_degree.text = tag_participation_degree.text.replace(str(participation_degree),
+                                                                              str(new_participation_degree))
+        altered_data = 'grau de participação'
+        prepareAlterationLogLines(altered_data, participation_degree, new_participation_degree)
+
+
+def alterDespenseCode(specified_procedure_data):
+    tag_despense_code = specified_procedure_data.find('ans:codigoDespesa', ans_prefix)
+
+    if Et.iselement(tag_despense_code) and new_despense_code != '' and new_despense_code != tag_despense_code.text:
+        tag_despense_code.text = tag_despense_code.text.replace(str(despense_code),
+                                                                str(new_despense_code))
+        altered_data = 'código de despesa'
+        prepareAlterationLogLines(altered_data, despense_code, new_despense_code)
+
+
 def alterProcedureCode(specified_procedure_data):
-    if guide_type == 'SADT':
-        tag_procedure_code = specified_procedure_data.find('ans:codigoProcedimento', ans_prefix)
-    elif guide_type == 'HOSPITALIZATION':
+    tag_procedure_code = specified_procedure_data.find('ans:codigoProcedimento', ans_prefix)
+    if not Et.iselement(tag_procedure_code):
+        tag_procedure_code = specified_procedure_data.find('.//ans:codigoProcedimento', ans_prefix)
+
+    if not Et.iselement(tag_procedure_code):
         tag_procedure_code = specified_procedure_data.find('ans:procedimento/ans:codigoProcedimento', ans_prefix)
+
+    if not Et.iselement(tag_procedure_code):
+        tag_procedure_code = specified_procedure_data.find('.//ans:procedimento/ans:codigoProcedimento', ans_prefix)
 
     if new_procedure_code != '' and new_procedure_code != tag_procedure_code.text:
         tag_procedure_code.text = tag_procedure_code.text.replace(str(procedure_code), str(new_procedure_code))
@@ -314,11 +341,17 @@ def prepareValueAlteration(review_line: list):
 def alterValues(specified_procedure_data: Et.ElementTree, account: Et.ElementTree):
     # GET PROCEDURE UNITARY VALUE
     unitary_value_tag = specified_procedure_data.find('ans:valorUnitario', ans_prefix)
+    if not Et.iselement(unitary_value_tag):
+        unitary_value_tag = specified_procedure_data.find('.//ans:valorUnitario', ans_prefix)
 
     # IF PROCEDURE VALUE IS THE SAME AS READED DOES ALTERATIONS
-    if unitary_value_tag.text == f'{float(unitary_value):.2f}':
-        executed_quantity = specified_procedure_data.find('ans:quantidadeExecutada', ans_prefix).text
+    if Et.iselement(unitary_value_tag) and unitary_value_tag.text == f'{float(unitary_value):.2f}':
+        executed_quantity = specified_procedure_data.find('ans:quantidadeExecutada', ans_prefix)
         procedure_total_value_tag = specified_procedure_data.find('ans:valorTotal', ans_prefix)
+
+        if not Et.iselement(executed_quantity) and not Et.iselement(procedure_total_value_tag):
+            executed_quantity = specified_procedure_data.find('.//ans:quantidadeExecutada', ans_prefix)
+            procedure_total_value_tag = specified_procedure_data.find('.//ans:valorTotal', ans_prefix)
 
         # STORAGE THE OLD PROCEDURE TOTAL VALUE
         old_procedure_total_value = procedure_total_value_tag.text
@@ -327,7 +360,7 @@ def alterValues(specified_procedure_data: Et.ElementTree, account: Et.ElementTre
         unitary_value_tag.text = f'{float(new_unitary_value):.2f}'
 
         # CALCULATE THE NEW TOTAL VALUE OF PROCEDURE AND ALTER
-        new_procedure_total_value = f'{float(unitary_value_tag.text) * float(executed_quantity):.2f}'
+        new_procedure_total_value = f'{float(unitary_value_tag.text) * float(executed_quantity.text):.2f}'
         procedure_total_value_tag.text = new_procedure_total_value
 
         # IF OLD VALUE LARGER THAN NEW VALUE

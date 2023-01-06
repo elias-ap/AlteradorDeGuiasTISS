@@ -1,0 +1,8 @@
+---------------------------- LOG DE ALTERAÇÕES ----------------------------
+Procedimento:40202615 grau de participação:00 alterado para:11
+Procedimento:90022181 tipo de tabela:20 alterado para:50
+Procedimento:90022181 unidade de medida:036 alterado para:050
+Procedimento:90022181 código de despesa:02 alterado para:05
+Procedimento:40202615 tipo de tabela:22 alterado para:30
+Procedimento:40202615 valor unitário:193.50 alterado para:200
+Procedimento:40202615 código do procedimento:40202615 alterado para:500000

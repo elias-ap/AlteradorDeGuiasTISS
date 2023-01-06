@@ -1,0 +1,26 @@
+---------------------------- LOG DE ALTERAÇÕES ----------------------------
+Procedimento:40601110 tipo de tabela:22 alterado para:30
+Procedimento:40601110 tipo de tabela:22 alterado para:30
+Procedimento:40601110 tipo de tabela:22 alterado para:30
+Procedimento:40601110 tipo de tabela:22 alterado para:30
+Procedimento:40601110 tipo de tabela:22 alterado para:30
+Procedimento:40601110 tipo de tabela:22 alterado para:30
+Procedimento:40601110 tipo de tabela:22 alterado para:30
+Procedimento:60023090 tipo de tabela:18 alterado para:50
+Procedimento:60023090 unidade de medida:036 alterado para:050
+Procedimento:60023090 código de despesa:07 alterado para:05
+Procedimento:60023090 tipo de tabela:18 alterado para:50
+Procedimento:60023090 unidade de medida:036 alterado para:050
+Procedimento:60023090 código de despesa:07 alterado para:05
+Procedimento:60023090 tipo de tabela:18 alterado para:50
+Procedimento:60023090 unidade de medida:036 alterado para:050
+Procedimento:60023090 código de despesa:07 alterado para:05
+Procedimento:60023090 valor unitário:168.59 alterado para:200
+Procedimento:60023090 valor unitário:168.59 alterado para:200
+Procedimento:60023090 valor unitário:168.59 alterado para:200
+Procedimento:40202615 tipo de tabela:22 alterado para:30
+Procedimento:40202615 tipo de tabela:22 alterado para:30
+Procedimento:40202615 tipo de tabela:22 alterado para:30
+Procedimento:60023090 código de despesa: alterado para:05
+Procedimento:60023090 código de despesa: alterado para:05
+Procedimento:60023090 código de despesa: alterado para:05
