@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="686c6a19-d19b-4982-af49-139191aec9d9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logs/0001.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/0001.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatic-alteration.py" beforeDir="false" afterPath="$PROJECT_DIR$/automatic-alteration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatic_alteration_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/automatic_alteration_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sources/Teste.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/sources/Teste.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unity-test.py" beforeDir="false" afterPath="$PROJECT_DIR$/unity-test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HOWUSE.md" beforeDir="false" afterPath="$PROJECT_DIR$/HOWUSE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Resources/Screenshots/main_window.png" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Screenshots/janela_principal.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,16 +39,23 @@
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;O:/Informatica/Geral/Funcionais/Faturamento de Convênios/Alterador de Guias TISS/README.html&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/eliasp/Documents/GitHub/python-automatics-data-alterations-in-xml-file&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file" />
       <recent name="C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file\tests" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file" />
+    </key>
+    <key name="ImportExportFile.TargetDir.RECENT_KEYS">
+      <recent name="C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.automatic_alteration_test">
     <configuration name="automatic_alteration_test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="python-automatics-data-alterations-in-xml-file" />
       <option name="INTERPRETER_OPTIONS" value="" />
