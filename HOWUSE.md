@@ -11,20 +11,50 @@ Para o seguinte exemplo usaremos o chamado do GLPI HelpDesk: **2022120202**.
 
 ### Passos
 
-<li type="1"><b>Abrir a aplicação</b></li>
-<p>O executável do software está localizado no caminho: 
-<a>O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS</a><br>Após executa-lo 
-basta aguardar a janela principal se abrir.
-<br>
+#### Com o chamado aberto:
+<li type="1"><b>Abra a aplicação</b></li>
+
+O executável do software está localizado no caminho: 
+
+[O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS]([O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS])
+
+Após executa-lo basta aguardar a janela principal se abrir:
+
 <img src="Resources/Screenshots/janela_principal.png"></p>
 
-<li type="1"><b>Abrir a planilha de críticas</b></li> 
+**1 - Abra a planilha de críticas**
 
-<li type="1"><b>Extração de críticas</b></li> 
-<p>O requerente passa as críticas e nesse caso o texto está em formato tabular, facilitando a extração (Ctrl+C):</p>
-<img src="Resources/Screenshots/example_review.png">
-<p></p>
+Ao clicar no botão ***Abrir planilha***, a planilha responsável por ler as críticas, localizada no diretório raiz será aberta.
 
+**2 - Extração de críticas**
 
-<li type="1">Escolhendo a guia para alteração: </li>
+No chamado, o requerente passa as críticas que são necessárias alterações:
+
+<img src="Resources/Screenshots/extraindo_criticas.png">
+
+Os retângulos em destaque representam as críticas que precisam ser extraídas e serão lidas para as alterações
+de **dados** e **valores**, conforme o requerente específica.
+
+**2.1 -  Alteração de dados**
+
+Para extrair as críticas de dados com facilidade, é possível selecionar e copiar as críticas (Ctrl+C).
+
+<img src="Resources/Screenshots/extracao_de_critica_DADOS.png">
+
+Em seguida, insira as críticas copiadas na planilha que foi aberta na aba de ***Dados*** e formate conforme instruído 
+nas áreas destacadas na imagem abaixo:
+
+<img src="Resources/Screenshots/inserir_dados.png">
+
+Ao final teremos:
+
+<img src="Resources/Screenshots/tabela_de_dados.png">
+
+**2.2 -  Alteração de valores**
+
+Seguindo o mesmo feito no passo **2.1**, selecionando, copiando e formatando 
+
+<img src="Resources/Screenshots/inserir_valores">
+
+**3 - Escolhendo a guia para alteração:**
 <img src="Resources/Screenshots/example_data_choosing_guide.png">
