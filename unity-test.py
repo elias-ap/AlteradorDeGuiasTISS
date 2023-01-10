@@ -84,8 +84,8 @@ def doAlterationAction():
     global not_found_items, alteration_log_list, control_var
     control_var = 0
     alteration_log_list = []
-    data_alteration_check = 1#data_alteration_check_button.get()
-    value_alteration_check = 0#value_alteration_check_button.get()
+    data_alteration_check = 0 #data_alteration_check_button.get()
+    value_alteration_check = 1 #value_alteration_check_button.get()
     guide_accounts = getGuideType()
     not_found_items = [f'Número de contas na guia: {len(guide_accounts)}\n']
 
@@ -307,7 +307,7 @@ def wasAltered():
 
 def doValueAlteration(guide_accounts):
     # READ WORKSHEET TABLE OF VALUE ALTERATION
-    table_reviews = pd.read_excel("Sources/Teste.xlsx", sheet_name='2', dtype=str,
+    table_reviews = pd.read_excel("Sources/Teste.xlsx",  sheet_name='2', dtype=str,
                                   keep_default_na=False)
 
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
@@ -528,10 +528,10 @@ def cancelAlteration():
 
 ########################################################################################################################
 # file_path = r"C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\Tests\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0.xml"
-file_path = r"C:\Users\eliasp\Downloads\00000000000000011306_2874F1E16CB511A0D378D6095D879747 (1).xml"
+file_path = r"C:\Users\eliasp\Downloads\00000000000000011306_2874F1E16CB511A0D378D6095D879747 (2).xml"
 openGuide(file_path)
 doAlterationAction()
-# saveGuideAfterAlterations()
+saveGuideAfterAlterations()
 # generateHashAndSave()
 
 # window = createGui()
