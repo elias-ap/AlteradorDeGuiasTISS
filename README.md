@@ -84,3 +84,5 @@ no sistema.
 
 As tabelas de leitura apenas trabalham com as colunas que possuem, alterações em tag como "quantidadeExecutada", entre outras
 não serão realizadas pelo software.
+
+O software não será executado ser aberto em modo administrador. 
