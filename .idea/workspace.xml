@@ -55,7 +55,7 @@
       <recent name="C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.automatic_alteration_test">
+  <component name="RunManager">
     <configuration name="automatic_alteration_test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="python-automatics-data-alterations-in-xml-file" />
       <option name="INTERPRETER_OPTIONS" value="" />
