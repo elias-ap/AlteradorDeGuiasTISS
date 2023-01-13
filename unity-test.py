@@ -2,9 +2,8 @@
 # IMPORTS
 import xml.etree.ElementTree as Et
 import customtkinter as ctk
-from sys import exit
-from os import getcwd, startfile, path
-from os.path import abspath, basename
+from os import startfile, path
+from os.path import abspath, basename, isfile
 from hashlib import md5
 from pandas import read_excel
 from typing import Generator
@@ -34,7 +33,7 @@ def generateHashAndSave():
 
 
 def openWorksheet():
-    path = os.path.abspath('Sources/Teste.xlsx')
+    path = abspath('Sources/Teste.xlsx')
     startfile(f"{path}")
 
 
@@ -43,7 +42,7 @@ def openGuide(path: str):  # path: str
     guide_path = path
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
     # guide_path = fd.askopenfilename(filetypes=file_type)
-    if path.isfile(guide_path):
+    if isfile(guide_path):
         root_tag = getRootTagFromXML(guide_path)
         # waitingAlterationConfig()
 
@@ -434,7 +433,7 @@ def generateNewHashCode(all_tags: Generator):
 def saveFile(guide_path: str):
     guide_name = basename(guide_path).split("_")[0]
     path = guide_path.rsplit('/', 1)[0]
-    output_path = r"C:\Users\eliasp\Documents\GitHub\python-automatics-data-alterations-in-xml-file\Tests\Output"
+    output_path = r"Tests/Output"
     guide_file.write(f'{output_path}/{guide_name}_{new_hash_code}.xml', encoding="ISO-8859-1")
 
 
@@ -532,7 +531,7 @@ def cancelAlteration():
 
 ########################################################################################################################
 # file_path = r"C:\Users\elias\Documents\GitHub\python-automatics-data-alterations-in-xml-file\Tests\00000000000000000090_ba313cac6d8bf136fdc5f46e4fd26fc0.xml"
-file_path = r"C:\Users\eliasp\Downloads\00000000000000011306_2874F1E16CB511A0D378D6095D879747 (2).xml"
+file_path = r"Tests/00000000000000011306_92a0e8826a52304e3ac85dfe30c83f38.xml"
 openGuide(file_path)
 doAlterationAction()
 saveGuideAfterAlterations()

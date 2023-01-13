@@ -11,6 +11,8 @@ de otimizar o tempo gasto para essa tarefa que até então era feita de forma ma
 
 <p align="justify">Realizar alterações de dados no arquivo XML de acordo com novos dados informados em uma planilha XLSX.</p>
 
+---
+
 ### Localização e uso do software
 
 <p align="justify">O executável do software pode ser usado sem a necessidade de instalação  de outros programas, porém, por medidas de 
