@@ -9,3 +9,5 @@ Procedimento:40202615 código do procedimento:40202615 alterado para:500000
 Procedimento:90122941 valor unitário:69.06 alterado para:66.30
 Procedimento:90486323 valor unitário:10.95 alterado para:10.51
 Procedimento:90516532 valor unitário:9 alterado para:8.64
+Procedimento:70223777 tipo de tabela:19 alterado para:50
+Procedimento:70223777 valor unitário:62.59 alterado para:70

@@ -1,12 +1,13 @@
 # This Python file uses the following encoding: utf-8
 # IMPORTS
-import sys
-import typing
 import xml.etree.ElementTree as Et
-import os
-import pandas as pd
-import hashlib
 import customtkinter as ctk
+from sys import exit
+from os import getcwd, startfile, path
+from os.path import abspath, basename
+from hashlib import md5
+from pandas import read_excel
+from typing import Generator
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
 
@@ -15,11 +16,11 @@ ans_prefix = {'ans': 'http://www.ans.gov.br/padroes/tiss/schemas'}
 
 # CLOSE APPLICATION IF NOT IN RIGHT EXECUTION PATH
 right_execution_path = r"O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS"
-current_execution_path = os.getcwd()
+current_execution_path = getcwd()
 if current_execution_path != right_execution_path:
     mb.showwarning('Erro',
                    f'A aplicação só pode ser executada a partir do diretório original:\n{right_execution_path}')
-    sys.exit()
+    exit()
 
 
 def generateHashAndSave():
@@ -41,15 +42,15 @@ def generateHashAndSave():
 
 
 def openWorksheet():
-    path = os.path.abspath('Planilha de Críticas.xlsx')
-    os.startfile(f"{path}")
+    path = abspath('Planilha de Críticas.xlsx')
+    startfile(f"{path}")
 
 
 def openGuide():
     global guide_path, root_tag
     file_type = (('XML files', '*.xml'), ('All files', '*.*'))
     guide_path = fd.askopenfilename(filetypes=file_type)
-    if os.path.isfile(guide_path):
+    if path.isfile(guide_path):
         root_tag = getRootTagFromXML(guide_path)
         waitingAlterationConfig()
 
@@ -115,6 +116,7 @@ def doAlterationAction():
 
     else:
         mb.showinfo('Atenção', 'Não foi realizada nenhuma alteração.')
+        del control_var
 
     showNotFoundItems(not_found_items)
 
@@ -137,7 +139,7 @@ def getGuideType():
 
 def doDataAlteration(guide_accounts: list[Et.Element]):
     # READ WORKSHEET TABLE OF DATA ALTERATION
-    table_reviews = pd.read_excel("Planilha de Críticas.xlsx", sheet_name='Dados', dtype=str, keep_default_na=False)
+    table_reviews = read_excel("Planilha de Críticas.xlsx", sheet_name='Dados', dtype=str, keep_default_na=False)
 
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
     for review_line in table_reviews.values:
@@ -318,7 +320,7 @@ def wasAltered():
 
 def doValueAlteration(guide_accounts):
     # READ WORKSHEET TABLE OF VALUE ALTERATION
-    table_reviews = pd.read_excel("Planilha de Críticas.xlsx", sheet_name='Valores', dtype=str,
+    table_reviews = read_excel("Planilha de Críticas.xlsx", sheet_name='Valores', dtype=str,
                                   keep_default_na=False)
 
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
@@ -401,7 +403,7 @@ def saveGuideAfterAlterations():
     saveFile(guide_path)
 
     # GET GUIDE NAME
-    guide_name = os.path.basename(guide_path).split("_")[0]
+    guide_name = path.basename(guide_path).split("_")[0]
     createLogFile(guide_name)
 
     mb.showinfo(message='Arquivo salvo!')
@@ -421,7 +423,7 @@ def removeHashTextFromGuide(guide_root_tag: Et.Element):
     return guide_root_tag
 
 
-def generateNewHashCode(all_tags: typing.Generator):
+def generateNewHashCode(all_tags: Generator):
     tags_texts = []
     unique_line_string = ''
     # FOR EVERY TAG REMOVE LINE BREAKS
@@ -433,20 +435,20 @@ def generateNewHashCode(all_tags: typing.Generator):
         unique_line_string += text
 
     # CREATE NEW HASH CODE
-    h = hashlib.md5(unique_line_string.encode('iso-8859-1'))
+    h = md5(unique_line_string.encode('iso-8859-1'))
     new_code = h.hexdigest()
     return new_code
 
 
 def saveFile(guide_path: str):
-    guide_name = os.path.basename(guide_path).split("_")[0]
+    guide_name = basename(guide_path).split("_")[0]
     path = guide_path.rsplit('/', 1)[0]
     guide_file.write(f'{path}/{guide_name}_{new_hash_code}.xml', encoding="ISO-8859-1")
 
 
 def createLogFile(guide_name: str):
     # GET ABSOLUTE PATH OF LOGS FOLDER
-    log_folder_path = os.path.abspath(r'Logs')
+    log_folder_path = path.abspath(r'Logs')
 
     # IF HAVE A LOG OF SAME GUIDE OPEN LOG LIKE APPEND MODE ELSE CREATE NEW TXT FILE AS LOG
     log_file = checkIfExistsLogFile(guide_name, log_folder_path)
@@ -466,7 +468,7 @@ def createLogFile(guide_name: str):
 
 
 def checkIfExistsLogFile(guide_name: str, log_folder_path: str):
-    if os.path.isfile(f'{log_folder_path}/{guide_name}.txt'):
+    if path.isfile(f'{log_folder_path}/{guide_name}.txt'):
         log_file = open(f'{log_folder_path}/{guide_name}.txt', 'a')
 
     else:

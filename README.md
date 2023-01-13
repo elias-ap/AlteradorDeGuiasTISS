@@ -11,37 +11,29 @@ de otimizar o tempo gasto para essa tarefa que até então era feita de forma ma
 
 <p align="justify">Realizar alterações de dados no arquivo XML de acordo com novos dados informados em uma planilha XLSX.</p>
 
-## Sumário
-
-
-1. **Leitura de críticas** 
-
-
 ### Localização e uso do software
 
 <p align="justify">O executável do software pode ser usado sem a necessidade de instalação  de outros programas, porém, por medidas de 
 segurança e versionamento, foi definido em seu código-fonte que a aplicação só poderá ser executada em seu 
 diretório (origem) localizado na pasta compartilhada da rede:</p>
 
-> <a>O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS</a>
+><a>O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS</a>
 
 ### Funcionalidades
 
 #### Leitura de críticas
 
-Para realização das alterações, será preciso adicionar as críticas manualmente nas tabelas da planilha localizada no diretório 
-raiz do software.
+<p align="justify">Para realização das alterações, será preciso adicionar as críticas manualmente nas tabelas da planilha localizada no diretório 
+raiz do software.</p>
 
-_Tabela 1º Aba - Alteração de dados_
-<br>
+_Tabela Dados - Alteração de dados_
 <img src="Resources\Screenshots\plan_data.png">
 
 Essa tabela é lida para alteração dos dados de procedimentos como: código de procedimento, tipo de tabela, grau 
-de participação, código de despesa, unidade de medida. Seus campos devem ser preenchidos de acordo com as colunas,
-caso o número da conta não seja especificado, todos os procedimentos com codigo correspondente serão alterados.
+de participação, código de despesa e unidade de medida. Seus campos devem ser preenchidos conforme as colunas,
+caso o número da conta não seja especificado, todos os procedimentos com código correspondente serão alterados.
 
-_Tabela 2º Aba - Alteração de valores_
-<br>
+_Tabela Valores - Alteração de valores_<br>
 <img src="Resources\Screenshots\plan_value.png">
 
 Essa tabela é lida para alteração de valores dos procedimentos. Caso os valores informados possuam casas decimais,
@@ -104,3 +96,31 @@ no sistema;
 
 
 - O software **não será executado** se aberto em modo administrador;
+
+## Tecnologias utilizadas
+
+- Linguagens:
+    - Python;
+  
+
+- Bibliotecas:
+
+  ````Python
+  # IMPORTS
+  import xml.etree.ElementTree as Et
+  import customtkinter as ctk
+  from sys import exit
+  from os import getcwd, startfile, path
+  from os.path import abspath, basename
+  from hashlib import md5
+  from pandas import read_excel
+  from typing import Generator
+  from tkinter import filedialog as fd
+  from tkinter import messagebox as mb
+  ````
+  
+---
+
+<div align="center">
+  <img height="100" width="100" align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1869px-Python-logo-notext.svg.png"></img>
+</div>
