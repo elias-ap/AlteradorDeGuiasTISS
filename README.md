@@ -1,5 +1,9 @@
 <h1 align="center">Alterador de Guias TISS</h1>
- 
+
+<div align="center">
+<img align="center" height="100px" width="100px" src="Resources/icon.ico">
+ </div>
+
 ## Prefácio
 
 <p align="justify">A ideia inicial desse projeto nasceu da necessidade de uma ferramenta capaz de realizar alterações de 
