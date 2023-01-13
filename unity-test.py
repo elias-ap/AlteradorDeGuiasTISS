@@ -133,7 +133,7 @@ def getGuideType():
 
 def doDataAlteration(guide_accounts: list[Et.Element]):
     # READ WORKSHEET TABLE OF DATA ALTERATION
-    table_reviews = read_excel("Sources/Teste.xlsx", sheet_name='1', dtype=str, keep_default_na=False)
+    table_reviews = read_excel("Sources/Teste.xlsx", sheet_name='Dados', dtype=str, keep_default_na=False)
 
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
     for review_line in table_reviews.values:
@@ -311,7 +311,7 @@ def wasAltered():
 
 def doValueAlteration(guide_accounts):
     # READ WORKSHEET TABLE OF VALUE ALTERATION
-    table_reviews = read_excel("Sources/Teste.xlsx",  sheet_name='2', dtype=str,
+    table_reviews = read_excel("Sources/Teste.xlsx",  sheet_name='Valores', dtype=str,
                                   keep_default_na=False)
 
     # FOR EACH REVIEW LINE IN TABLE, IF THE CONDITIONS IS ATTENDED DOES ALTERATIONS
