@@ -9,15 +9,21 @@ de otimizar o tempo gasto para essa tarefa que até então era feita de forma ma
 
 ## Objetivo
 
-<p align="justify">Realizar alterações de dados dentro do arquivo XML de acordo com novos dados informados em uma planilha XLSX.</p>
+<p align="justify">Realizar alterações de dados no arquivo XML de acordo com novos dados informados em uma planilha XLSX.</p>
+
+## Sumário
+
+
+1. **Leitura de críticas** 
+
 
 ### Localização e uso do software
 
 <p align="justify">O executável do software pode ser usado sem a necessidade de instalação  de outros programas, porém, por medidas de 
-segurança e versionamento, foi definido em seu código fonte que a aplicação só poderá ser executada em seu 
+segurança e versionamento, foi definido em seu código-fonte que a aplicação só poderá ser executada em seu 
 diretório (origem) localizado na pasta compartilhada da rede:</p>
 
-<a>O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS</a>
+> <a>O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS</a>
 
 ### Funcionalidades
 
@@ -70,7 +76,7 @@ Após carregar uma guia outras interações são desbloqueadas:
 - **Alteração de valor:** define se a tabela de alteração de valores será lida e serão feitas as alterações nos valores;
 
 
-- **Realizar alterações:** realiza as alterações de acordo com os dados lidos nas linhas da planilha;
+- **Realizar alterações:** realiza as alterações conforme os dados lidos nas linhas da planilha;
 
 
 - **Cancelar:** retorna a janela padrão e desfaz qualquer alteração feita na guia carregada;
