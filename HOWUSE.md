@@ -17,7 +17,7 @@ Com o chamado aberto:
 
 O executável do software está localizado no caminho: 
 
-[O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS]([O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS])
+> [O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS]([O:\Informatica\Geral\Funcionais\Faturamento de Convênios\Alterador de Guias TISS])
 
 Após executa-lo basta aguardar a janela principal se abrir:
 
