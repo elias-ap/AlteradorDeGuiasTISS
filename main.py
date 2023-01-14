@@ -540,5 +540,7 @@ def cancelAlteration():
 
 ########################################################################################################################
 
+# TODO --> Refactor code to POO
+
 window = createGui()
 window.mainloop()
