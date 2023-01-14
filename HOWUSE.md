@@ -1,5 +1,9 @@
 <h1 align="center">Como usar o Alterador de Guias TISS</h1>
 
+<div align="center">
+<img align="center" height="100px" width="100px" src="Resources/icon.ico">
+ </div>
+
 ## Pré-requisitos
 
 Para a facilitar o entendimento das funcionalidades e uso do software, é indispensável a leitura da documentação
